@@ -73,7 +73,7 @@ def _check_methods(cls, subclass):  # pylint: disable=too-many-branches
         elif isinstance(methobj, staticmethod):
             if submethobj is UNDEFINED or not isinstance(submethobj, staticmethod):
                 result = Result(False, 'Does not contain required static method (%s)' % meth, 211)
-            elif PY26:
+            elif PY26:  # pragma: no cover
                 if getfullargspec(methobj.__get__(True)) != \
                    getfullargspec(submethobj.__get__(True)):
                     result = Result(False, bad_arg_spec % meth, 220)
@@ -83,7 +83,7 @@ def _check_methods(cls, subclass):  # pylint: disable=too-many-branches
         elif isinstance(methobj, classmethod):
             if submethobj is UNDEFINED or not isinstance(submethobj, classmethod):
                 result = Result(False, 'Does not contain required class method (%s)' % meth, 212)
-            elif PY26:
+            elif PY26:  # pragma: no cover
                 if getfullargspec(methobj.__get__(True).__func__) != \
                    getfullargspec(submethobj.__get__(True).__func__):
                     result = Result(False, bad_arg_spec % meth, 220)
