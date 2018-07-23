@@ -1,10 +1,9 @@
 .. start-badges
 
-.. raw:: html
-
-    <a href="https://repology.org/metapackage/python:pluginlib">
-        <img src="https://repology.org/badge/vertical-allrepos/python:pluginlib.svg?header=" alt="Packaging status" align="right">
-    </a>
+.. image:: https://repology.org/badge/vertical-allrepos/python:pluginlib.svg?header=
+    :target: https://repology.org/metapackage/python:pluginlib
+    :alt: Packaging Status
+    :align: right
 
 | |docs| |travis| |codecov|
 | |pypi| |supported-versions| |supported-implementations|
