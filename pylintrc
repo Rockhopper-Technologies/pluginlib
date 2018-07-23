@@ -1,0 +1,60 @@
+[MASTER]
+ignore=bad.py
+
+[REPORTS]
+output-format=colorized
+
+[FORMAT]
+# Use max line length of 100
+max-line-length=100
+
+[BASIC]
+
+good-names=e
+
+[DESIGN]
+# Minimum number of public methods for a class (see R0903).
+min-public-methods=0
+
+#Maximum number of locals for function / method body
+max-locals=20
+
+# Maximum number of branch for function / method body
+max-branches=16
+
+#Maximum number of arguments for function / method,
+max-args=8
+
+#Maximum number of attributes for a class (see R0902)
+max-attributes=8
+
+[MESSAGES CONTROL]
+disable=
+    locally-disabled,
+    useless-object-inheritance
+
+[SPELLING]
+# Spelling dictionary name.
+spelling-dict=en_US
+
+# List of comma separated words that should not be checked.
+spelling-ignore-words=
+    abstractattribute, abstractmethod, abstractclassmethod, abstractstaticmethod,
+    assertRaisesRegexp, assertNotRegexpMatches, assertRegexpMatches,
+    attr, autoattribute, Args, Avram, Lubkin,
+    BlacklistEntry, bool, Boolean,
+    classmethod, cls,
+    EntryPointWarning, errorcode, exc,
+    func,
+    importlib, ImportWarning, init, Iterable, iterable, iterables,
+    json, JSON,
+    KeyError,
+    Metaclass, metaclass, Mixin, mixin, Mozilla, MPL, MRO,
+    namespace, noqa,
+    Pluginlib, pluginlib, PluginlibError, PluginLoader, PluginWarning, popitem, pragma, py,
+    repr,
+    setdefault, str, Skipload, staticmethod, subclasses, Subpackage, Submodule, submodules, sys,
+    TestCase, traceback, tuple, tuples,
+    unittest, UserWarning,
+    wildcard,
+    XML
