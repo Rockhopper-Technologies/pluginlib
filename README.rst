@@ -10,7 +10,7 @@
 | |pypi| |supported-versions| |supported-implementations|
 
 .. |docs| image:: https://img.shields.io/readthedocs/python-pluginlib.svg?style=plastic
-    :target: https://python-pluginlib.readthedocs.org
+    :target: https://pluginlib.readthedocs.org
     :alt: Documentation Status
 .. |travis| image:: https://img.shields.io/travis/Rockhopper-Technologies/pluginlib.svg?style=plastic
     :target: https://travis-ci.org/Rockhopper-Technologies/pluginlib
@@ -133,15 +133,15 @@ a nested dictionary accessible through dot notation.
 
 .. _Entry points: https://packaging.python.org/specifications/entry-points/
 
-.. _PluginLoader: http://python-enlighten.readthedocs.io/en/latest/api.html#pluginlib.PluginLoader
-.. _PluginLoader.plugins: http://python-enlighten.readthedocs.io/en/latest/api.html#pluginlib.PluginLoader.plugins
-.. _@Parent: http://python-enlighten.readthedocs.io/en/latest/api.html#pluginlib.Parent
-.. _alias: http://python-enlighten.readthedocs.io/en/latest/api.html#pluginlib.Plugin._alias_
-.. _version: http://python-enlighten.readthedocs.io/en/latest/api.html#pluginlib.Plugin._version_
-.. _skipload: http://python-enlighten.readthedocs.io/en/latest/api.html#pluginlib.Plugin._skipload_
+.. _PluginLoader: http://pluginlib.readthedocs.io/en/latest/api.html#pluginlib.PluginLoader
+.. _PluginLoader.plugins: http://pluginlib.readthedocs.io/en/latest/api.html#pluginlib.PluginLoader.plugins
+.. _@Parent: http://pluginlib.readthedocs.io/en/latest/api.html#pluginlib.Parent
+.. _alias: http://pluginlib.readthedocs.io/en/latest/api.html#pluginlib.Plugin._alias_
+.. _version: http://pluginlib.readthedocs.io/en/latest/api.html#pluginlib.Plugin._version_
+.. _skipload: http://pluginlib.readthedocs.io/en/latest/api.html#pluginlib.Plugin._skipload_
 
-.. _Versions: http://python-enlighten.readthedocs.io/en/latest/concepts.html#versions
-.. _Blacklists: http://python-enlighten.readthedocs.io/en/latest/concepts.html#blacklists
-.. _Abstract Methods: http://python-enlighten.readthedocs.io/en/latest/concepts.html#abstract-methods
-.. _Conditional Loading: http://python-enlighten.readthedocs.io/en/latest/concepts.html#conditional-loading
-.. _Plugin Groups: http://python-enlighten.readthedocs.io/en/latest/concepts.html#plugin-groups
+.. _Versions: http://pluginlib.readthedocs.io/en/latest/concepts.html#versions
+.. _Blacklists: http://pluginlib.readthedocs.io/en/latest/concepts.html#blacklists
+.. _Abstract Methods: http://pluginlib.readthedocs.io/en/latest/concepts.html#abstract-methods
+.. _Conditional Loading: http://pluginlib.readthedocs.io/en/latest/concepts.html#conditional-loading
+.. _Plugin Groups: http://pluginlib.readthedocs.io/en/latest/concepts.html#plugin-groups
