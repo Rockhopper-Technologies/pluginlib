@@ -9,7 +9,7 @@
 | |docs| |travis| |codecov|
 | |pypi| |supported-versions| |supported-implementations|
 
-.. |docs| image:: https://img.shields.io/readthedocs/python-pluginlib.svg?style=plastic
+.. |docs| image:: https://img.shields.io/readthedocs/pluginlib.svg?style=plastic
     :target: https://pluginlib.readthedocs.org
     :alt: Documentation Status
 .. |travis| image:: https://img.shields.io/travis/Rockhopper-Technologies/pluginlib.svg?style=plastic
@@ -75,15 +75,15 @@ To create a plugin, subclass a parent class and include any required methods.
 
 Plugins can be customized through optional class attributes:
 
-    `_alias_ <alias>`_
+    `_alias_`_
         Changes the name of the plugin which defaults to the class name.
 
-    `_version_ <version>`_
+    `_version_`_
         Sets the version of the plugin. Defaults to the module ``__version__`` or ``None``
         If multiple plugins with the same type and name are loaded, the plugin with
         the highest version is used. For more information, see the Versions_ section.
 
-    `_skipload_ <skipload>`_
+    `_skipload_`_
         Specifies the plugin should not be loaded. This is useful when a plugin is a parent class
         for additional plugins or when a plugin should only be loaded under certain conditions.
         For more information see the `Conditional Loading`_ section.
@@ -136,9 +136,9 @@ a nested dictionary accessible through dot notation.
 .. _PluginLoader: http://pluginlib.readthedocs.io/en/latest/api.html#pluginlib.PluginLoader
 .. _PluginLoader.plugins: http://pluginlib.readthedocs.io/en/latest/api.html#pluginlib.PluginLoader.plugins
 .. _@Parent: http://pluginlib.readthedocs.io/en/latest/api.html#pluginlib.Parent
-.. _alias: http://pluginlib.readthedocs.io/en/latest/api.html#pluginlib.Plugin._alias_
-.. _version: http://pluginlib.readthedocs.io/en/latest/api.html#pluginlib.Plugin._version_
-.. _skipload: http://pluginlib.readthedocs.io/en/latest/api.html#pluginlib.Plugin._skipload_
+.. _\_alias\_: http://pluginlib.readthedocs.io/en/latest/api.html#pluginlib.Plugin._alias_
+.. _\_version\_: http://pluginlib.readthedocs.io/en/latest/api.html#pluginlib.Plugin._version_
+.. _\_skipload\_: http://pluginlib.readthedocs.io/en/latest/api.html#pluginlib.Plugin._skipload_
 
 .. _Versions: http://pluginlib.readthedocs.io/en/latest/concepts.html#versions
 .. _Blacklists: http://pluginlib.readthedocs.io/en/latest/concepts.html#blacklists
