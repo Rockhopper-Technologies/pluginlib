@@ -20,3 +20,6 @@ build
 
 # Misc
 notes
+
+# Spec
+*.spec
