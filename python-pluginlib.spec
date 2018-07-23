@@ -41,6 +41,7 @@ BuildRequires:  python%{python3_other_pkgversion}-setuptools
 # Additional build requirements for Python 2.6
 %if 0%{?el6}
 BuildRequires:  python-unittest2
+BuildRequires:  python-importlib
 %endif
 
 %description
@@ -54,6 +55,10 @@ BuildRequires:  python-unittest2
 Summary:        %{sum}
 %{?python_provide:%python_provide python2-%{pypi_name}}
 Requires:       python2-setuptools
+
+%if 0%{?el6}
+Requires:  python-importlib
+%endif
 
 %description -n python2-%{pypi_name}
 %{desc}
