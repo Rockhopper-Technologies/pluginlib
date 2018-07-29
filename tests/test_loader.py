@@ -372,6 +372,27 @@ class TestPluginLoader(TestCase):
 
             self.assertEqual(plugins1, plugins2)
 
+    def test_plugins_all(self):
+        """plugins only loads modules on the first call"""
+
+        ploader = loader.PluginLoader(group='testdata', library='tests.testdata.lib')
+        with mock.patch.object(ploader, 'load_modules',
+                               wraps=ploader.load_modules) as mock_load_modules:
+            plugins1 = ploader.plugins_all
+            self.assertEqual(mock_load_modules.call_count, 1)
+
+            self.assertEqual(len(plugins1.parser), 2)
+            self.assertTrue('xml' in plugins1.parser)
+            self.assertIsInstance(plugins1.parser.xml, dict)
+            self.assertTrue('json' in plugins1.parser)
+            self.assertIsInstance(plugins1.parser.json, dict)
+            self.assertEqual(sorted(plugins1.parser.json.keys()), ['1.0', '2.0'])
+
+            plugins2 = ploader.plugins_all
+            self.assertEqual(mock_load_modules.call_count, 1)
+
+            self.assertEqual(plugins1, plugins2)
+
     def test_blacklist(self):
         """Blacklist prevents listing plugin"""
 

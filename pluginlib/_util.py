@@ -269,12 +269,13 @@ class GroupDict(DictWithDotNotation):
     _bl_skip_attrs = ('name', 'version')
     _bl_empty = DictWithDotNotation
 
-    def _newest(self, blacklist=None):
+    def _filter(self, blacklist=None, newest_only=False):
         """
         Args:
             blacklist(tuple): Iterable of of BlacklistEntry objects
+            newest_only(bool): Only the newest version of each plugin is returned
 
-        Returns nested dictionary of plugins with only the newest version of each plugin
+        Returns nested dictionary of plugins
 
         If a blacklist is supplied, plugins are evaluated against the blacklist entries
         """
@@ -301,14 +302,15 @@ class GroupDict(DictWithDotNotation):
                     plugin_blacklist.append(entry)
 
                 if not skip:
-                    result = val._newest(plugin_blacklist)  # pylint: disable=protected-access
+                    # pylint: disable=protected-access
+                    result = val._filter(plugin_blacklist, newest_only=newest_only)
                     if result or not self._skip_empty:
                         plugins[key] = result
 
         else:
 
             for key, val in self.items():
-                result = val._newest()  # pylint: disable=protected-access
+                result = val._filter(newest_only=newest_only)  # pylint: disable=protected-access
                 if result or not self._skip_empty:
                     plugins[key] = result
 
@@ -379,12 +381,13 @@ class PluginDict(CachingDict):
         self._cache['blacklist'] = blacklist_cache
         return set().union(*blacklist_cache.values())
 
-    def _newest(self, blacklist=None):
+    def _filter(self, blacklist=None, newest_only=False):
         """
         Args:
             blacklist(tuple): Iterable of of BlacklistEntry objects
+            newest_only(bool): Only the newest version of each plugin is returned
 
-        Returns dictionary of plugins with only the newest version of each plugin
+        Returns dictionary of plugins
 
         If a blacklist is supplied, plugins are evaluated against the blacklist entries
         """
@@ -397,13 +400,21 @@ class PluginDict(CachingDict):
 
                 blacklist = self._process_blacklist(blacklist)
 
-                for key in reversed(self._sorted_keys()):
-                    if key not in blacklist:
-                        rtn = self[key]
-                        break
+                if newest_only:
+                    for key in reversed(self._sorted_keys()):
+                        if key not in blacklist:
+                            rtn = self[key]
+                            break
+                    # If no keys are left, None will be returned
+                else:
+                    rtn = dict((key, val) for key, val in self.items() if key not in blacklist) \
+                          or None
+
+            elif newest_only:
+                rtn = self[self._sorted_keys()[-1]]
 
             else:
-                rtn = self[self._sorted_keys()[-1]]
+                rtn = dict(self)
 
         return rtn
 

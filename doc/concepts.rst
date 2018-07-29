@@ -103,8 +103,9 @@ Versions
 Plugin versions have two uses in Pluginlib:
 
     1. If multiple plugins with the same type and name are loaded, the plugin with
-       the highest version is used.
+       the highest version is used when :py:attr:`PluginLoader.plugins` is accessed.
     2. :ref:`blacklists` can filter plugins based on their version number.
+    3. :py:attr:`PluginLoader.plugins_all` returns all unfiltered versions of plugins
 
 Versions must be strings and should adhere to `PEP 440`_. Version strings are
 evaluated using :py:func:`pkg_resources.parse_version`.

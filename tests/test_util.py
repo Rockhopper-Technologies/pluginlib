@@ -263,11 +263,11 @@ class TestGroupDict(TestCase):
     def setUp(self):
         """Create sample dictionary"""
         self.mock_type_parser = mock.Mock()
-        self.mock_type_parser._newest.return_value = 'parser'
+        self.mock_type_parser._filter.return_value = 'parser'
         self.mock_type_engine = mock.Mock()
-        self.mock_type_engine._newest.return_value = 'engine'
+        self.mock_type_engine._filter.return_value = 'engine'
         self.mock_type_empty = mock.Mock()
-        self.mock_type_empty._newest.return_value = {}
+        self.mock_type_empty._filter.return_value = {}
 
         self.expected = {'parser': 'parser', 'engine': 'engine', 'empty': {}}
         self.gdict = util.GroupDict({'parser': self.mock_type_parser,
@@ -276,48 +276,48 @@ class TestGroupDict(TestCase):
 
     def test_no_blacklist(self):
         """Skip all blacklist logic"""
-        self.assertEqual(self.gdict._newest(), self.expected)
-        self.mock_type_parser._newest.assert_called_with()
-        self.mock_type_engine._newest.assert_called_with()
-        self.mock_type_empty._newest.assert_called_with()
+        self.assertEqual(self.gdict._filter(), self.expected)
+        self.mock_type_parser._filter.assert_called_with(newest_only=False)
+        self.mock_type_engine._filter.assert_called_with(newest_only=False)
+        self.mock_type_empty._filter.assert_called_with(newest_only=False)
 
-        self.assertEqual(self.gdict._newest([]), self.expected)
-        self.mock_type_parser._newest.assert_called_with()
-        self.mock_type_engine._newest.assert_called_with()
-        self.mock_type_empty._newest.assert_called_with()
+        self.assertEqual(self.gdict._filter([]), self.expected)
+        self.mock_type_parser._filter.assert_called_with(newest_only=False)
+        self.mock_type_engine._filter.assert_called_with(newest_only=False)
+        self.mock_type_empty._filter.assert_called_with(newest_only=False)
 
     def test_blacklist_by_type(self):
         """Entire type is blacklisted, so it should be empty"""
         blacklist = [util.BlacklistEntry('parser')]
         self.expected['parser'] = {}
-        self.assertEqual(self.gdict._newest(blacklist), self.expected)
-        self.mock_type_parser._newest.assert_not_called()
-        self.mock_type_engine._newest.assert_called_with([])
-        self.mock_type_empty._newest.assert_called_with([])
+        self.assertEqual(self.gdict._filter(blacklist), self.expected)
+        self.mock_type_parser._filter.assert_not_called()
+        self.mock_type_engine._filter.assert_called_with([], newest_only=False)
+        self.mock_type_empty._filter.assert_called_with([], newest_only=False)
 
     def test_blacklist_by_type_name(self):
         """A type and specific name is blacklisted, so blacklist is passed to child for type"""
         blacklist = [util.BlacklistEntry('parser', 'json')]
-        self.assertEqual(self.gdict._newest(blacklist), self.expected)
-        self.mock_type_parser._newest.ssert_called_with(blacklist)
-        self.mock_type_engine._newest.assert_called_with([])
-        self.mock_type_empty._newest.assert_called_with([])
+        self.assertEqual(self.gdict._filter(blacklist), self.expected)
+        self.mock_type_parser._filter.assert_called_with(blacklist, newest_only=False)
+        self.mock_type_engine._filter.assert_called_with([], newest_only=False)
+        self.mock_type_empty._filter.assert_called_with([], newest_only=False)
 
     def test_blacklist_by_name(self):
         """A name is blacklisted in all types, so all children are passed the blacklist"""
         blacklist = [util.BlacklistEntry(None, 'json')]
-        self.assertEqual(self.gdict._newest(blacklist), self.expected)
-        self.mock_type_parser._newest.ssert_called_with(blacklist)
-        self.mock_type_engine._newest.assert_called_with(blacklist)
-        self.mock_type_empty._newest.assert_called_with(blacklist)
+        self.assertEqual(self.gdict._filter(blacklist), self.expected)
+        self.mock_type_parser._filter.assert_called_with(blacklist, newest_only=False)
+        self.mock_type_engine._filter.assert_called_with(blacklist, newest_only=False)
+        self.mock_type_empty._filter.assert_called_with(blacklist, newest_only=False)
 
     def test_empty(self):
         """Unless the entire type is blacklisted, an empty return value is still included"""
         blacklist = [util.BlacklistEntry('empty', 'json')]
-        self.assertEqual(self.gdict._newest(blacklist), self.expected)
-        self.mock_type_parser._newest.ssert_called_with([])
-        self.mock_type_engine._newest.assert_called_with([])
-        self.mock_type_empty._newest.assert_called_with(blacklist)
+        self.assertEqual(self.gdict._filter(blacklist), self.expected)
+        self.mock_type_parser._filter.assert_called_with([], newest_only=False)
+        self.mock_type_engine._filter.assert_called_with([], newest_only=False)
+        self.mock_type_empty._filter.assert_called_with(blacklist, newest_only=False)
 
 
 class TestTypeDict(TestCase):
@@ -326,9 +326,9 @@ class TestTypeDict(TestCase):
     def setUp(self):
         """Create sample dictionary"""
         self.mock_plugin_json = mock.Mock()
-        self.mock_plugin_json._newest.return_value = 'json'
+        self.mock_plugin_json._filter.return_value = 'json'
         self.mock_plugin_xml = mock.Mock()
-        self.mock_plugin_xml._newest.return_value = 'xml'
+        self.mock_plugin_xml._filter.return_value = 'xml'
         self.expected = {'json': 'json', 'xml': 'xml'}
         self.tdict = util.TypeDict('parser', {'json': self.mock_plugin_json,
                                               'xml': self.mock_plugin_xml})
@@ -339,59 +339,59 @@ class TestTypeDict(TestCase):
 
     def test_no_blacklist(self):
         """Skip all blacklist logic"""
-        self.assertEqual(self.tdict._newest(), self.expected)
-        self.mock_plugin_json._newest.assert_called_with()
-        self.mock_plugin_xml._newest.assert_called_with()
+        self.assertEqual(self.tdict._filter(), self.expected)
+        self.mock_plugin_json._filter.assert_called_with(newest_only=False)
+        self.mock_plugin_xml._filter.assert_called_with(newest_only=False)
 
-        self.assertEqual(self.tdict._newest([]), self.expected)
-        self.mock_plugin_json._newest.assert_called_with()
-        self.mock_plugin_xml._newest.assert_called_with()
+        self.assertEqual(self.tdict._filter([]), self.expected)
+        self.mock_plugin_json._filter.assert_called_with(newest_only=False)
+        self.mock_plugin_xml._filter.assert_called_with(newest_only=False)
 
     def test_blacklist_by_name(self):
         """Entire name is blacklisted, so it's not called or included"""
         blacklist = [util.BlacklistEntry(None, 'json')]
         del self.expected['json']
-        self.assertEqual(self.tdict._newest(blacklist), self.expected)
-        self.mock_plugin_json._newest.assert_not_called()
-        self.mock_plugin_xml._newest.assert_called_with([])
+        self.assertEqual(self.tdict._filter(blacklist), self.expected)
+        self.mock_plugin_json._filter.assert_not_called()
+        self.mock_plugin_xml._filter.assert_called_with([], newest_only=False)
 
     def test_blacklist_all(self):
         """Type is blacklisted, so all are blacklisted"""
         blacklist = [util.BlacklistEntry('parser')]
-        self.assertEqual(self.tdict._newest(blacklist), {})
-        self.mock_plugin_json._newest.assert_not_called()
-        self.mock_plugin_xml._newest.assert_not_called()
+        self.assertEqual(self.tdict._filter(blacklist), {})
+        self.mock_plugin_json._filter.assert_not_called()
+        self.mock_plugin_xml._filter.assert_not_called()
 
     def test_blacklist_by_name_version(self):
         """A name and version is blacklisted, so blacklist is passed to child for type"""
         blacklist = [util.BlacklistEntry('parser', 'json', '1.0')]
-        self.assertEqual(self.tdict._newest(blacklist), self.expected)
-        self.mock_plugin_json._newest.assert_called_with(blacklist)
-        self.mock_plugin_xml._newest.assert_called_with([])
+        self.assertEqual(self.tdict._filter(blacklist), self.expected)
+        self.mock_plugin_json._filter.assert_called_with(blacklist, newest_only=False)
+        self.mock_plugin_xml._filter.assert_called_with([], newest_only=False)
 
     def test_blacklist_by_version(self):
         """Only a version is blacklisted, so blacklist is passed to all children"""
         blacklist = [util.BlacklistEntry(None, None, '1.0')]
-        self.assertEqual(self.tdict._newest(blacklist), self.expected)
-        self.mock_plugin_json._newest.assert_called_with(blacklist)
-        self.mock_plugin_xml._newest.assert_called_with(blacklist)
+        self.assertEqual(self.tdict._filter(blacklist), self.expected)
+        self.mock_plugin_json._filter.assert_called_with(blacklist, newest_only=False)
+        self.mock_plugin_xml._filter.assert_called_with(blacklist, newest_only=False)
 
     def test_empty(self):
         """Empty values are not included"""
         mock_plugin_empty = mock.Mock()
-        mock_plugin_empty._newest.return_value = None
+        mock_plugin_empty._filter.return_value = None
         self.tdict['empty'] = mock_plugin_empty
-        self.assertEqual(self.tdict._newest(), self.expected)
-        self.tdict._newest()
-        self.mock_plugin_json._newest.assert_called_with()
-        self.mock_plugin_xml._newest.assert_called_with()
-        mock_plugin_empty._newest.assert_called_with()
+        self.assertEqual(self.tdict._filter(), self.expected)
+        self.tdict._filter()
+        self.mock_plugin_json._filter.assert_called_with(newest_only=False)
+        self.mock_plugin_xml._filter.assert_called_with(newest_only=False)
+        mock_plugin_empty._filter.assert_called_with(newest_only=False)
 
         blacklist = [util.BlacklistEntry(None, None, '1.0')]
-        self.assertEqual(self.tdict._newest(blacklist), self.expected)
-        self.mock_plugin_json._newest.assert_called_with(blacklist)
-        self.mock_plugin_xml._newest.assert_called_with(blacklist)
-        mock_plugin_empty._newest.assert_called_with(blacklist)
+        self.assertEqual(self.tdict._filter(blacklist), self.expected)
+        self.mock_plugin_json._filter.assert_called_with(blacklist, newest_only=False)
+        self.mock_plugin_xml._filter.assert_called_with(blacklist, newest_only=False)
+        mock_plugin_empty._filter.assert_called_with(blacklist, newest_only=False)
 
 
 class TestPluginDict(TestCase):
@@ -424,16 +424,19 @@ class TestPluginDict(TestCase):
     def test_empty(self):
         """Empty dictionary will return None"""
         udict = util.PluginDict()
-        self.assertIsNone(udict._newest())
-        self.assertIsNone(udict._newest('FakeBlackList'))
+        self.assertIsNone(udict._filter())
+        self.assertIsNone(udict._filter(newest_only=True))
+        self.assertIsNone(udict._filter('FakeBlackList'))
+        self.assertIsNone(udict._filter('FakeBlackList', newest_only=True))
 
     def test_no_blacklist(self):
         """Return newest without filtering"""
-        self.assertEqual(self.udict._newest(), 'tres')
+        self.assertEqual(self.udict._filter(newest_only=True), 'tres')
 
     def test_empty_blacklist(self):
         """Same as no blacklist"""
-        self.assertEqual(self.udict._newest([]), 'tres')
+        self.assertEqual(self.udict._filter([]), self.udict)
+        self.assertEqual(self.udict._filter([], newest_only=True), 'tres')
 
     def test_blacklist(self):
         """Cache gets populated and results get filtered"""
@@ -441,25 +444,35 @@ class TestPluginDict(TestCase):
         # Cache is populated and highest value is filtered
         blacklist = [util.BlacklistEntry(None, None, '3.0')]
         self.assertFalse('blacklist' in self.udict._cache)
-        self.assertEqual(self.udict._newest(blacklist), 'dos')
+        self.assertEqual(self.udict._filter(blacklist, newest_only=True), 'dos')
         self.assertEqual(len(self.udict._cache['blacklist']), 1)
         self.assertEqual(self.udict._cache['blacklist'][('3.0', '==')], set(['3.0']))
 
+        self.assertEqual(self.udict._filter(blacklist), {'2.0': 'dos', '1.0': 'uno'})
+
         # Another entry is cached, result is the same
         blacklist.append(util.BlacklistEntry(None, None, '1.0'))
-        self.assertEqual(self.udict._newest(blacklist), 'dos')
+        self.assertEqual(self.udict._filter(blacklist, newest_only=True), 'dos')
         self.assertEqual(len(self.udict._cache['blacklist']), 2)
         self.assertEqual(self.udict._cache['blacklist'][('1.0', '==')], set(['1.0']))
 
+        self.assertEqual(self.udict._filter(blacklist), {'2.0': 'dos'})
+
         # An equivalent entry is added, cache is the same
         blacklist.append(util.BlacklistEntry(None, 'number', '3.0', '=='))
-        self.assertEqual(self.udict._newest(blacklist), 'dos')
+        self.assertEqual(self.udict._filter(blacklist, newest_only=True), 'dos')
         self.assertEqual(len(self.udict._cache['blacklist']), 2)
+
+        self.assertEqual(self.udict._filter(blacklist), {'2.0': 'dos'})
 
     def test_no_result(self):
         """Blacklist filters all"""
         blacklist = [util.BlacklistEntry(None, None, '4.0', '<')]
-        self.assertIsNone(self.udict._newest(blacklist))
+
+        self.assertIsNone(self.udict._filter(blacklist))
+        self.assertEqual(self.udict._cache['blacklist'][('4.0', '<')], set(['1.0', '2.0', '3.0']))
+
+        self.assertIsNone(self.udict._filter(blacklist, newest_only=True))
         self.assertEqual(self.udict._cache['blacklist'][('4.0', '<')], set(['1.0', '2.0', '3.0']))
 
 
