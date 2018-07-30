@@ -269,7 +269,17 @@ class GroupDict(DictWithDotNotation):
     _bl_skip_attrs = ('name', 'version')
     _bl_empty = DictWithDotNotation
 
-    def _filter(self, blacklist=None, newest_only=False):
+    def _items(self, type_filter=None):
+
+        if type_filter and self._bl_compare_attr == 'type':
+            for key, val in self.items():
+                if key in type_filter:
+                    yield key, val
+        else:
+            for key, val in self.items():
+                yield key, val
+
+    def _filter(self, blacklist=None, newest_only=False, type_filter=None):
         """
         Args:
             blacklist(tuple): Iterable of of BlacklistEntry objects
@@ -285,7 +295,7 @@ class GroupDict(DictWithDotNotation):
         if blacklist:
             # Assume blacklist is correct format since it is checked by PluginLoader
 
-            for key, val in self.items():
+            for key, val in self._items(type_filter):
 
                 plugin_blacklist = []
                 skip = False
@@ -309,7 +319,7 @@ class GroupDict(DictWithDotNotation):
 
         else:
 
-            for key, val in self.items():
+            for key, val in self._items(type_filter):
                 result = val._filter(newest_only=newest_only)  # pylint: disable=protected-access
                 if result or not self._skip_empty:
                     plugins[key] = result

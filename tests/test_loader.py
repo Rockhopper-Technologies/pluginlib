@@ -40,7 +40,7 @@ class TestPluginLoaderInit(TestCase):
         """Error is raised when argument type is wrong"""
 
         # Expect iterables
-        for arg in ('modules', 'paths', 'blacklist'):
+        for arg in ('modules', 'paths', 'blacklist', 'type_filter'):
 
             with self.assertRaises(TypeError):
                 loader.PluginLoader(**{arg: 'string'})
@@ -305,6 +305,17 @@ class TestPluginLoader(TestCase):
         self.assertTrue('steam' in plugins.engine)
 
         self.assertEqual(plugins.engine.steam.__module__, 'tests.testdata.importer.steam')
+
+    def test_type_filter(self):
+        """Filter plugin types"""
+
+        ploader = loader.PluginLoader(group='testdata', library='tests.testdata.lib',
+                                      type_filter=('engine', 'parser'))
+        plugins = ploader.plugins
+
+        self.assertTrue('parser' in plugins)
+        self.assertTrue('engine' in plugins)
+        self.assertFalse('hook' in plugins)
 
     def test_load_paths_missing(self):
         """Log on invalid path"""

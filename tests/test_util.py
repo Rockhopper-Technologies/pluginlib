@@ -319,6 +319,11 @@ class TestGroupDict(TestCase):
         self.mock_type_engine._filter.assert_called_with([], newest_only=False)
         self.mock_type_empty._filter.assert_called_with(blacklist, newest_only=False)
 
+    def test_type_filter(self):
+        """Types not in list should be ignored"""
+        del self.expected['engine']
+        self.assertEqual(self.gdict._filter(type_filter=('parser', 'empty')), self.expected)
+
 
 class TestTypeDict(TestCase):
     """Tests for GroupDict dictionary subclass"""
@@ -392,6 +397,10 @@ class TestTypeDict(TestCase):
         self.mock_plugin_json._filter.assert_called_with(blacklist, newest_only=False)
         self.mock_plugin_xml._filter.assert_called_with(blacklist, newest_only=False)
         mock_plugin_empty._filter.assert_called_with(blacklist, newest_only=False)
+
+    def test_type_filter(self):
+        """type_filter ignored in type dict"""
+        self.assertEqual(self.tdict._filter(type_filter=('engine')), self.expected)
 
 
 class TestPluginDict(TestCase):

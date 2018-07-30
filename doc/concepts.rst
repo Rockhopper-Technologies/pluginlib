@@ -247,3 +247,20 @@ will be available from the :py:class:`PluginLoader` instance.
 .. code-block:: python
 
     loader = pluginlib.PluginLoader(modules=['sample_plugins'], group='my_framework')
+
+
+Type Filter
+-----------
+
+By default, :py:class:`PluginLoader` will provide plugins for all parent plugins in the same
+plugin group. To limit plugins to specific types, use the ``type_filter`` keyword.
+
+.. code-block:: python
+
+    loader = PluginLoader(library='myapp.lib')
+    print(loader.plugins.keys())
+    # ['parser', 'engine', 'hook', 'action']
+
+    loader = PluginLoader(library='myapp.lib', type_filter=('parser', 'engine'))
+    print(loader.plugins.keys())
+    # ['parser', 'engine']

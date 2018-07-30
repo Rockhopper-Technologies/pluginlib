@@ -136,6 +136,7 @@ def _recursive_import(package):
             _import_module(submod[1], submod[0].path)
 
 
+# pylint: disable=too-many-instance-attributes,too-many-arguments
 class PluginLoader(object):
     """
     Args:
@@ -146,6 +147,7 @@ class PluginLoader(object):
         entry_point(str): `Entry point`_ for additional plugins
         blacklist(list): Iterable of :py:class:`BlacklistEntry` objects or tuples
         prefix_package(str): Alternative prefix for imported packages
+        type_filter(list): Iterable of parent plugin types to allow
 
     **Interface for importing and accessing plugins**
 
@@ -178,18 +180,22 @@ class PluginLoader(object):
     specified in ``paths``. Because the package paths will be traversed recursively, this should
     be an empty path.
 
+    ``type_filter`` limits plugins types to only those specified. A specified type is not
+    guaranteed to be available.
+
     .. _Entry point: https://packaging.python.org/specifications/entry-points/
     """
 
     def __init__(self, group=None, library=None, modules=None, paths=None, entry_point=None,
-                 blacklist=None, prefix_package='pluginlib.importer'):
+                 blacklist=None, prefix_package='pluginlib.importer', type_filter=None):
 
         # Make sure we got iterables
-        for argname, arg in (('modules', modules), ('paths', paths), ('blacklist', blacklist)):
+        for argname, arg in (('modules', modules), ('paths', paths), ('blacklist', blacklist),
+                             ('type_filter', type_filter)):
             if not isinstance(arg, (NoneType, Iterable)) or isinstance(arg, BASESTRING):
                 raise TypeError("Expecting iterable for '%s', recieved %s" % (argname, type(arg)))
 
-        # Make sure we got stings
+        # Make sure we got strings
         for argname, arg in (('library', library), ('entry_point', entry_point),
                              ('prefix_package', prefix_package)):
             if not isinstance(arg, (NoneType, BASESTRING)):
@@ -201,6 +207,7 @@ class PluginLoader(object):
         self.paths = paths or tuple()
         self.entry_point = entry_point
         self.prefix_package = prefix_package
+        self.type_filter = type_filter
         self.loaded = False
 
         if blacklist:
@@ -334,7 +341,8 @@ class PluginLoader(object):
             self.load_modules()
 
         # pylint: disable=protected-access
-        return get_plugins()[self.group]._filter(blacklist=self.blacklist, newest_only=True)
+        return get_plugins()[self.group]._filter(blacklist=self.blacklist, newest_only=True,
+                                                 type_filter=self.type_filter)
 
     @property
     def plugins_all(self):
@@ -356,4 +364,5 @@ class PluginLoader(object):
             self.load_modules()
 
         # pylint: disable=protected-access
-        return get_plugins()[self.group]._filter(blacklist=self.blacklist)
+        return get_plugins()[self.group]._filter(blacklist=self.blacklist,
+                                                 type_filter=self.type_filter)
