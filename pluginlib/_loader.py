@@ -237,7 +237,7 @@ class PluginLoader(object):
         args = []
         for attr, default in (('group', '_default'), ('library', None), ('modules', None),
                               ('paths', None), ('entry_point', None), ('blacklist', None),
-                              ('prefix_package', 'pluginlib.importer')):
+                              ('prefix_package', 'pluginlib.importer'), ('type_filter', None)):
 
             val = getattr(self, attr)
             if default and val == default:
