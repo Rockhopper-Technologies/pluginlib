@@ -265,13 +265,27 @@ class GroupDict(DictWithDotNotation):
     """
 
     _skip_empty = False
-    _bl_compare_attr = 'type'
+    _key_attr = 'type'
     _bl_skip_attrs = ('name', 'version')
     _bl_empty = DictWithDotNotation
 
-    def _items(self, type_filter=None):
+    def _items(self, type_filter=None, name=None):
+        """
+        Args:
+            type_filter(list): Optional iterable of types to return (GroupDict only)
+            name(str): Only return key by this name
 
-        if type_filter and self._bl_compare_attr == 'type':
+        Alternative generator for items() method
+        """
+
+        if name:
+            if type_filter and self._key_attr == 'type':
+                if name in type_filter and name in self:
+                    yield name, self[name]
+            elif name in self:
+                yield name, self[name]
+
+        elif type_filter and self._key_attr == 'type':
             for key, val in self.items():
                 if key in type_filter:
                     yield key, val
@@ -279,11 +293,14 @@ class GroupDict(DictWithDotNotation):
             for key, val in self.items():
                 yield key, val
 
-    def _filter(self, blacklist=None, newest_only=False, type_filter=None):
+    def _filter(self, blacklist=None, newest_only=False, type_filter=None, **kwargs):
         """
         Args:
             blacklist(tuple): Iterable of of BlacklistEntry objects
             newest_only(bool): Only the newest version of each plugin is returned
+            type(str): Plugin type to retrieve
+            name(str): Plugin name to retrieve
+            version(str): Plugin version to retrieve
 
         Returns nested dictionary of plugins
 
@@ -291,39 +308,37 @@ class GroupDict(DictWithDotNotation):
         """
 
         plugins = DictWithDotNotation()
+        filtered_name = kwargs.get(self._key_attr, None)
 
-        if blacklist:
-            # Assume blacklist is correct format since it is checked by PluginLoader
+        for key, val in self._items(type_filter, filtered_name):
+            plugin_blacklist = None
+            skip = False
 
-            for key, val in self._items(type_filter):
+            if blacklist:
+
+                # Assume blacklist is correct format since it is checked by PluginLoade
 
                 plugin_blacklist = []
-                skip = False
-
                 for entry in blacklist:
-                    if getattr(entry, self._bl_compare_attr) not in (key, None):
+                    if getattr(entry, self._key_attr) not in (key, None):
                         continue
                     if all(getattr(entry, attr) is None for attr in self._bl_skip_attrs):
                         if not self._skip_empty:
-                            plugins[key] = self._bl_empty()
+                            plugins[key] = None if filtered_name else self._bl_empty()
                         skip = True
                         break
 
                     plugin_blacklist.append(entry)
 
-                if not skip:
-                    # pylint: disable=protected-access
-                    result = val._filter(plugin_blacklist, newest_only=newest_only)
-                    if result or not self._skip_empty:
-                        plugins[key] = result
+            if not skip:
+                # pylint: disable=protected-access
+                result = val._filter(plugin_blacklist, newest_only=newest_only, **kwargs)
 
-        else:
-
-            for key, val in self._items(type_filter):
-                result = val._filter(newest_only=newest_only)  # pylint: disable=protected-access
                 if result or not self._skip_empty:
                     plugins[key] = result
 
+        if filtered_name:
+            return plugins.get(filtered_name, None)
         return plugins
 
 
@@ -333,7 +348,7 @@ class TypeDict(GroupDict):
     """
 
     _skip_empty = True
-    _bl_compare_attr = 'name'
+    _key_attr = 'name'
     _bl_skip_attrs = ('version',)
     _bl_empty = None  # Not callable, but never called since _skip_empty is True
 
@@ -391,17 +406,19 @@ class PluginDict(CachingDict):
         self._cache['blacklist'] = blacklist_cache
         return set().union(*blacklist_cache.values())
 
-    def _filter(self, blacklist=None, newest_only=False):
+    def _filter(self, blacklist=None, newest_only=False, **kwargs):
         """
         Args:
             blacklist(tuple): Iterable of of BlacklistEntry objects
             newest_only(bool): Only the newest version of each plugin is returned
+            version(str): Specific version to retrieve
 
         Returns dictionary of plugins
 
         If a blacklist is supplied, plugins are evaluated against the blacklist entries
         """
 
+        version = kwargs.get('version', None)
         rtn = None
 
         if self:  # Dict is not empty
@@ -410,7 +427,11 @@ class PluginDict(CachingDict):
 
                 blacklist = self._process_blacklist(blacklist)
 
-                if newest_only:
+                if version:
+                    if version not in blacklist:
+                        rtn = self.get(version, None)
+
+                elif newest_only:
                     for key in reversed(self._sorted_keys()):
                         if key not in blacklist:
                             rtn = self[key]
@@ -419,6 +440,9 @@ class PluginDict(CachingDict):
                 else:
                     rtn = dict((key, val) for key, val in self.items() if key not in blacklist) \
                           or None
+
+            elif version:
+                rtn = self.get(version, None)
 
             elif newest_only:
                 rtn = self[self._sorted_keys()[-1]]

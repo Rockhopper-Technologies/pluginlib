@@ -263,13 +263,13 @@ class TestGroupDict(TestCase):
     def setUp(self):
         """Create sample dictionary"""
         self.mock_type_parser = mock.Mock()
-        self.mock_type_parser._filter.return_value = 'parser'
+        self.mock_type_parser._filter.return_value = 'parsertype'
         self.mock_type_engine = mock.Mock()
-        self.mock_type_engine._filter.return_value = 'engine'
+        self.mock_type_engine._filter.return_value = 'enginetype'
         self.mock_type_empty = mock.Mock()
         self.mock_type_empty._filter.return_value = {}
 
-        self.expected = {'parser': 'parser', 'engine': 'engine', 'empty': {}}
+        self.expected = {'parser': 'parsertype', 'engine': 'enginetype', 'empty': {}}
         self.gdict = util.GroupDict({'parser': self.mock_type_parser,
                                      'engine': self.mock_type_engine,
                                      'empty': self.mock_type_empty})
@@ -277,14 +277,14 @@ class TestGroupDict(TestCase):
     def test_no_blacklist(self):
         """Skip all blacklist logic"""
         self.assertEqual(self.gdict._filter(), self.expected)
-        self.mock_type_parser._filter.assert_called_with(newest_only=False)
-        self.mock_type_engine._filter.assert_called_with(newest_only=False)
-        self.mock_type_empty._filter.assert_called_with(newest_only=False)
+        self.mock_type_parser._filter.assert_called_with(None, newest_only=False)
+        self.mock_type_engine._filter.assert_called_with(None, newest_only=False)
+        self.mock_type_empty._filter.assert_called_with(None, newest_only=False)
 
         self.assertEqual(self.gdict._filter([]), self.expected)
-        self.mock_type_parser._filter.assert_called_with(newest_only=False)
-        self.mock_type_engine._filter.assert_called_with(newest_only=False)
-        self.mock_type_empty._filter.assert_called_with(newest_only=False)
+        self.mock_type_parser._filter.assert_called_with(None, newest_only=False)
+        self.mock_type_engine._filter.assert_called_with(None, newest_only=False)
+        self.mock_type_empty._filter.assert_called_with(None, newest_only=False)
 
     def test_blacklist_by_type(self):
         """Entire type is blacklisted, so it should be empty"""
@@ -324,6 +324,25 @@ class TestGroupDict(TestCase):
         del self.expected['engine']
         self.assertEqual(self.gdict._filter(type_filter=('parser', 'empty')), self.expected)
 
+    def test_type(self):
+        """Get a specific type"""
+        self.assertEqual(self.gdict._filter(type='engine'), 'enginetype')
+        self.mock_type_engine._filter.assert_called_with(None, newest_only=False, type='engine')
+        self.assertIsNone(self.gdict._filter(type='penguin'))
+
+    def test_type_and_type_filter(self):
+        """Type filter still affects calls for specific types"""
+        self.assertEqual(self.gdict._filter(type_filter=('parser', 'empty'), type='engine'), None)
+        self.mock_type_engine._filter.assert_not_called()
+        self.mock_type_parser._filter.assert_not_called()
+        self.mock_type_empty._filter.assert_not_called()
+
+        self.assertEqual(self.gdict._filter(type_filter=('engine', 'empty'), type='engine'),
+                         'enginetype')
+        self.mock_type_engine._filter.assert_called_with(None, newest_only=False, type='engine')
+        self.mock_type_parser._filter.assert_not_called()
+        self.mock_type_empty._filter.assert_not_called()
+
 
 class TestTypeDict(TestCase):
     """Tests for GroupDict dictionary subclass"""
@@ -331,10 +350,10 @@ class TestTypeDict(TestCase):
     def setUp(self):
         """Create sample dictionary"""
         self.mock_plugin_json = mock.Mock()
-        self.mock_plugin_json._filter.return_value = 'json'
+        self.mock_plugin_json._filter.return_value = 'jsonplugin'
         self.mock_plugin_xml = mock.Mock()
-        self.mock_plugin_xml._filter.return_value = 'xml'
-        self.expected = {'json': 'json', 'xml': 'xml'}
+        self.mock_plugin_xml._filter.return_value = 'xmlplugin'
+        self.expected = {'json': 'jsonplugin', 'xml': 'xmlplugin'}
         self.tdict = util.TypeDict('parser', {'json': self.mock_plugin_json,
                                               'xml': self.mock_plugin_xml})
 
@@ -345,12 +364,12 @@ class TestTypeDict(TestCase):
     def test_no_blacklist(self):
         """Skip all blacklist logic"""
         self.assertEqual(self.tdict._filter(), self.expected)
-        self.mock_plugin_json._filter.assert_called_with(newest_only=False)
-        self.mock_plugin_xml._filter.assert_called_with(newest_only=False)
+        self.mock_plugin_json._filter.assert_called_with(None, newest_only=False)
+        self.mock_plugin_xml._filter.assert_called_with(None, newest_only=False)
 
         self.assertEqual(self.tdict._filter([]), self.expected)
-        self.mock_plugin_json._filter.assert_called_with(newest_only=False)
-        self.mock_plugin_xml._filter.assert_called_with(newest_only=False)
+        self.mock_plugin_json._filter.assert_called_with(None, newest_only=False)
+        self.mock_plugin_xml._filter.assert_called_with(None, newest_only=False)
 
     def test_blacklist_by_name(self):
         """Entire name is blacklisted, so it's not called or included"""
@@ -388,9 +407,9 @@ class TestTypeDict(TestCase):
         self.tdict['empty'] = mock_plugin_empty
         self.assertEqual(self.tdict._filter(), self.expected)
         self.tdict._filter()
-        self.mock_plugin_json._filter.assert_called_with(newest_only=False)
-        self.mock_plugin_xml._filter.assert_called_with(newest_only=False)
-        mock_plugin_empty._filter.assert_called_with(newest_only=False)
+        self.mock_plugin_json._filter.assert_called_with(None, newest_only=False)
+        self.mock_plugin_xml._filter.assert_called_with(None, newest_only=False)
+        mock_plugin_empty._filter.assert_called_with(None, newest_only=False)
 
         blacklist = [util.BlacklistEntry(None, None, '1.0')]
         self.assertEqual(self.tdict._filter(blacklist), self.expected)
@@ -401,6 +420,13 @@ class TestTypeDict(TestCase):
     def test_type_filter(self):
         """type_filter ignored in type dict"""
         self.assertEqual(self.tdict._filter(type_filter=('engine')), self.expected)
+
+    def test_name(self):
+        """Get a specific name"""
+        self.assertEqual(self.tdict._filter(name='json'), 'jsonplugin')
+        self.mock_plugin_json._filter.assert_called_with(None, newest_only=False, name='json')
+
+        self.assertIsNone(self.tdict._filter(name='pengion'))
 
 
 class TestPluginDict(TestCase):
@@ -483,6 +509,16 @@ class TestPluginDict(TestCase):
 
         self.assertIsNone(self.udict._filter(blacklist, newest_only=True))
         self.assertEqual(self.udict._cache['blacklist'][('4.0', '<')], set(['1.0', '2.0', '3.0']))
+
+    def test_version(self):
+        """Return specific version"""
+        self.assertEqual(self.udict._filter(newest_only=True, version='1.0'), 'uno')
+
+    def test_version_blacklist(self):
+        """Return specific version if not blacklisted"""
+        blacklist = [util.BlacklistEntry(None, None, '1.0')]
+        self.assertEqual(self.udict._filter(blacklist, newest_only=True, version='1.0'), None)
+        self.assertEqual(self.udict._filter(blacklist, newest_only=True, version='2.0'), 'dos')
 
 
 class TestClassAbstractStaticMethod(TestCase):

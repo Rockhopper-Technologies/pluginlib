@@ -113,7 +113,7 @@ def unload(module):
         del sys.modules[mod]
 
 
-# pylint: disable=protected-access
+# pylint: disable=protected-access,too-many-public-methods
 class TestPluginLoader(TestCase):
     """Tests for PluginLoader"""
 
@@ -413,3 +413,57 @@ class TestPluginLoader(TestCase):
 
         self.assertEqual(len(plugins.engine), 0)
         self.assertEqual(plugins.parser.json.version, '1.0')
+
+    def test_get_plugin(self):
+        """Retrieve specific plugin"""
+
+        ploader = loader.PluginLoader(group='testdata', library='tests.testdata.lib')
+        with mock.patch.object(ploader, 'load_modules',
+                               wraps=ploader.load_modules) as mock_load_modules:
+
+            jsonplugin = ploader.get_plugin('parser', 'json')
+            self.assertEqual(jsonplugin.name, 'json')
+            self.assertEqual(jsonplugin.version, '2.0')
+            self.assertEqual(mock_load_modules.call_count, 1)
+
+            jsonplugin = ploader.get_plugin('parser', 'json', '1.0')
+            self.assertEqual(jsonplugin.name, 'json')
+            self.assertEqual(jsonplugin.version, '1.0')
+            self.assertEqual(mock_load_modules.call_count, 1)
+
+    def test_get_plugin_missing(self):
+        """Attempt to retrieve non-existent plugin, return None"""
+
+        ploader = loader.PluginLoader(group='testdata', library='tests.testdata.lib')
+        self.assertIsNone(ploader.get_plugin('penguin', 'json'))
+        self.assertIsNone(ploader.get_plugin('parser', 'penguin'))
+
+        ploader = loader.PluginLoader(group='testdata', library='tests.testdata.lib')
+        self.assertIsNone(ploader.get_plugin('parser', 'json', '300.1.1'))
+
+    def test_get_plugin_filtered(self):
+        """Retrieve specific plugin if not filtered"""
+
+        ploader = loader.PluginLoader(group='testdata', library='tests.testdata.lib',
+                                      type_filter=('engine', 'hook'))
+
+        self.assertIsNone(ploader.get_plugin('parser', 'json'))
+
+        steamplugin = ploader.get_plugin('engine', 'steam')
+        self.assertEqual(steamplugin.name, 'steam')
+
+    def test_get_plugin_blacklist(self):
+        """Retrieve specific plugin if not blacklisted"""
+
+        blacklist = [('parser', 'json', '2.0'), ('parser', 'xml'), ('engine',)]
+
+        ploader = loader.PluginLoader(group='testdata', library='tests.testdata.lib',
+                                      blacklist=blacklist)
+
+        self.assertIsNone(ploader.get_plugin('parser', 'json', '2.0'))
+        self.assertIsNone(ploader.get_plugin('parser', 'xml'))
+        self.assertIsNone(ploader.get_plugin('engine', 'steam'))
+
+        jsonplugin = ploader.get_plugin('parser', 'json')
+        self.assertEqual(jsonplugin.name, 'json')
+        self.assertEqual(jsonplugin.version, '1.0')
