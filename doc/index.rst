@@ -103,10 +103,12 @@ will load modules from specified locations and provides access to them.
     - A list of modules
     - A list of filesystem paths
 
-Plugins can also be blacklisted. See the :ref:`blacklists` section for more information.
+Plugins can also be filtered through blacklists and type filters.
+See the :ref:`blacklists` and :ref:`type-filters` sections for more information.
 
 Plugins are accessible through the :py:attr:`PluginLoader.plugins` property,
-a nested dictionary accessible through dot notation.
+a nested dictionary accessible through dot notation. For other ways to access plugins,
+see the :ref:`accessing-plugins` section.
 
 .. code-block:: python
 

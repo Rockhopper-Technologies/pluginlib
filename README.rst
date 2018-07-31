@@ -122,10 +122,12 @@ PluginLoader_ can load plugins from several locations.
     - A list of modules
     - A list of filesystem paths
 
-Plugins can also be blacklisted. See the Blacklists_ section for more information.
+Plugins can also be filtered through blacklists and type filters.
+See the Blacklists_ and `Type Filters`_ sections for more information.
 
 Plugins are accessible through the PluginLoader.plugins_ property,
-a nested dictionary accessible through dot notation.
+a nested dictionary accessible through dot notation. For other ways to access plugins,
+see the `Accessing Plugins`_ section.
 
 .. code-block:: python
 
@@ -148,6 +150,8 @@ a nested dictionary accessible through dot notation.
 
 .. _Versions: http://pluginlib.readthedocs.io/en/latest/concepts.html#versions
 .. _Blacklists: http://pluginlib.readthedocs.io/en/latest/concepts.html#blacklists
+.. _Type Filters: http://pluginlib.readthedocs.io/en/latest/concepts.html#type-filters
+.. _Accessing Plugins: http://pluginlib.readthedocs.io/en/latest/concepts.html#accessing-plugins
 .. _Abstract Methods: http://pluginlib.readthedocs.io/en/latest/concepts.html#abstract-methods
 .. _Conditional Loading: http://pluginlib.readthedocs.io/en/latest/concepts.html#conditional-loading
 .. _Plugin Groups: http://pluginlib.readthedocs.io/en/latest/concepts.html#plugin-groups

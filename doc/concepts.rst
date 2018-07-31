@@ -249,8 +249,10 @@ will be available from the :py:class:`PluginLoader` instance.
     loader = pluginlib.PluginLoader(modules=['sample_plugins'], group='my_framework')
 
 
-Type Filter
------------
+.. _type-filters:
+
+Type Filters
+------------
 
 By default, :py:class:`PluginLoader` will provide plugins for all parent plugins in the same
 plugin group. To limit plugins to specific types, use the ``type_filter`` keyword.
@@ -264,3 +266,46 @@ plugin group. To limit plugins to specific types, use the ``type_filter`` keywor
     loader = PluginLoader(library='myapp.lib', type_filter=('parser', 'engine'))
     print(loader.plugins.keys())
     # ['parser', 'engine']
+
+
+
+.. _accessing-plugins:
+
+Accessing Plugins
+-----------------
+
+Plugins are accessed through :py:class:`PluginLoader` properties and methods. In all cases,
+plugins that are filtered out through :ref:`blacklists <blacklists>` or
+:ref:`type filters <type-filters>` will not be returned.
+
+Plugins are filtered each time these methods are called, so it is recommended to save the result
+to a variable.
+
+:py:attr:`PluginLoader.plugins`
+    This property returns the newest version of each available plugin.
+
+:py:attr:`PluginLoader.plugins_all`
+    This property returns all versions of each available plugin.
+
+:py:meth:`PluginLoader.get_plugin`
+    This method returns a specific plugin or :py:data:`None` if unavailable.
+
+.. code-block:: python
+
+    loader = PluginLoader(library='myapp.lib')
+
+    plugins = loader.plugins
+    # {'parser': {'json': <class 'myapp.lib.JSONv2'>}}
+
+    plugins_all = loader.plugins_all
+    # {'parser': {'json': {'1.0': <class 'myapp.lib.JSONv1'>,
+    #                      '2.0': <class 'myapp.lib.JSONv2'>}}}
+
+    json_parser = loader.get_plugin('parser', 'json')
+    # <class 'myapp.lib.JSONv2'>
+
+    json_parser = loader.get_plugin('parser', 'json', '1.0')
+    # <class 'myapp.lib.JSONv1'>
+
+    json_parser = loader.get_plugin('parser', 'json', '4.0')
+    # None
