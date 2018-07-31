@@ -20,6 +20,6 @@ from abc import abstractmethod, abstractproperty
 
 from pluginlib._parent import Parent, Plugin
 from pluginlib._loader import PluginLoader
-from pluginlib._util import (abstractstaticmethod, abstractclassmethod,
-                             BlacklistEntry, abstractattribute)
+from pluginlib._objects import BlacklistEntry
+from pluginlib._util import abstractstaticmethod, abstractclassmethod, abstractattribute
 from pluginlib.exceptions import PluginlibError, PluginImportError, PluginWarning, EntryPointWarning

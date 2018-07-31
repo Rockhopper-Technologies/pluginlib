@@ -15,8 +15,9 @@ import sys
 import warnings
 
 from pluginlib.exceptions import PluginWarning
-from pluginlib._util import (ClassProperty, Undefined, Result, TypeDict, LOGGER,
-                             DictWithDotNotation, PluginDict, GroupDict, allow_bare_decorator)
+from pluginlib._objects import GroupDict, TypeDict, PluginDict
+from pluginlib._util import (allow_bare_decorator, ClassProperty, DictWithDotNotation,
+                             LOGGER, Result, Undefined)
 
 DEFAULT = '_default'
 UNDEFINED = Undefined()

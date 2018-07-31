@@ -22,8 +22,9 @@ import warnings
 from pkg_resources import iter_entry_points, EntryPoint
 
 from pluginlib.exceptions import PluginImportError, EntryPointWarning
+from pluginlib._objects import BlacklistEntry
 from pluginlib._parent import get_plugins
-from pluginlib._util import BlacklistEntry, LOGGER, NoneType, raise_with_traceback, BASESTRING
+from pluginlib._util import BASESTRING, LOGGER, NoneType, raise_with_traceback
 
 
 def format_exception(etype, value, tback, limit=None):
