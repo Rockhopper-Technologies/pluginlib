@@ -269,7 +269,7 @@ class Plugin(object):
        Can also be a static or class method that returns a tuple ``(bool, message)``"""
     _version_ = None
     """:py:class:`str` -- Plugin version. Should adhere to `PEP 440`_.
-       Accessed through :attr:`~Plugin.version` property"""
+       Accessed through :attr:`~Plugin.version` property."""
 
     @ClassProperty
     def version(cls):  # noqa: N805  # pylint: disable=no-self-argument
