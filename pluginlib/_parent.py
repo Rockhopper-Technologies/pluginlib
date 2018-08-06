@@ -261,6 +261,8 @@ class Plugin(object):
     .. _PEP 440: https://www.python.org/dev/peps/pep-0440/
     """
 
+    __slots__ = ()
+
     _alias_ = None
     """:py:class:`str` -- Friendly name to refer to plugin.
        Accessed through :attr:`~Plugin.name` property."""
