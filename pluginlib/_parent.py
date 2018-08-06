@@ -312,6 +312,8 @@ class Parent(object):
     in an single program, such as in libraries and frameworks.
     """
 
+    __slots__ = 'plugin_type', 'group'
+
     def __init__(self, plugin_type=None, group=None):
         self.plugin_type = plugin_type
         self.group = group
