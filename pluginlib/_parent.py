@@ -257,8 +257,6 @@ class Plugin(object):
             :annotation:
 
             :py:class:`str` -- :attr:`_alias_` if set or falls back to class name
-
-    .. _PEP 440: https://www.python.org/dev/peps/pep-0440/
     """
 
     __slots__ = ()
@@ -271,7 +269,9 @@ class Plugin(object):
        Can also be a static or class method that returns a tuple ``(bool, message)``"""
     _version_ = None
     """:py:class:`str` -- Plugin version. Should adhere to `PEP 440`_.
-       Accessed through :attr:`~Plugin.version` property."""
+       Accessed through :attr:`~Plugin.version` property.
+
+       .. _PEP 440: https://www.python.org/dev/peps/pep-0440/"""
 
     @ClassProperty
     def version(cls):  # noqa: N805  # pylint: disable=no-self-argument
