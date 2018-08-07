@@ -20,6 +20,16 @@ from tests import TestCase, OUTPUT
 # pylint: disable=protected-access, no-member
 
 
+# This should be imported from types, but it's broken in pypy
+# https://bitbucket.org/pypy/pypy/issues/2865
+class Placeholder(object):
+    """Placeholder to get type"""
+    __slots__ = ('member',)
+
+
+MemberDescriptorType = type(Placeholder.__dict__['member'])  # pylint: disable=invalid-name
+
+
 class TestParent(TestCase):
     """Test Parent decorator"""
 
@@ -140,6 +150,26 @@ class TestParent(TestCase):
     def test_child_is_parent_peers(self):
         """A parent class is used as base class for new parent, has peers"""
         self.child_is_parent(True)
+
+    def test_slots(self):
+        """slots in a parent work as expected"""
+
+        @parent.Parent
+        class WithSlots(object):
+            """This class has slots"""
+            __slots__ = ('ivar',)
+
+            def __init__(self, ivar):
+                self.ivar = ivar
+
+        inst = WithSlots(1)
+
+        self.assertTrue('ivar' in WithSlots.__dict__)
+        # Usually slots are member descriptors, but in pypy they are getset descriptors
+        self.assertIsInstance(WithSlots.__dict__['ivar'], MemberDescriptorType,)
+        self.assertTrue(hasattr(inst, '__slots__'))
+        self.assertFalse(hasattr(inst, '__dict__'))
+        self.assertEqual(inst.ivar, 1)
 
 
 class TestPlugin(TestCase):

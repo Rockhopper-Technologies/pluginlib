@@ -340,6 +340,10 @@ class Parent(object):
         dict_.pop('__dict__', None)
         dict_.pop('__weakref__', None)
 
+        # Clean out slot members
+        for member in dict_.get('__slots__', ()):
+            dict_.pop(member, None)
+
         # Set type
         dict_['_type_'] = self.plugin_type or cls.__name__
         dict_['_group_'] = self.group
