@@ -10,7 +10,7 @@
 A framework for creating and importing plugins
 """
 
-__version__ = '0.6.0'
+__version__ = '0.6.1'
 
 __all__ = ['abstractmethod', 'abstractproperty', 'abstractstaticmethod', 'abstractclassmethod',
            'abstractattribute', 'BlacklistEntry', 'EntryPointWarning', 'Parent', 'Plugin',
