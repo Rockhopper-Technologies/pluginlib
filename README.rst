@@ -45,12 +45,12 @@ Step 1: Define plugin parent classes
 ------------------------------------
 
 All plugins are subclasses of parent classes. To create a parent class, use the
-@Parent_ decorator.
+`@Parent`_ decorator.
 
-The @Parent_ decorator can take a plugin type for accessing child plugins
+The `@Parent`_ decorator can take a plugin type for accessing child plugins
 of the parent. If a plugin type isn't given, the class name will be used.
 
-The @Parent_ decorator can also take a ``group`` keyword which
+The `@Parent`_ decorator can also take a ``group`` keyword which
 restricts plugins to a specific plugin group. ``group`` should be specified if plugins for
 different projects could be accessed in an single program, such as with libraries and frameworks.
 For more information, see the `Plugin Groups`_ section.
