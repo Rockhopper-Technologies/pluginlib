@@ -83,7 +83,7 @@ For code that must be compatible with older versions of Python, use the
         def abstract_property(self):
             return self.foo
 
-Abstract attributes call also be defined, but no guarantee is made as too what kind of attribute
+Abstract attributes call also be defined, but no guarantee is made as to what kind of attribute
 the child plugin will have, just that the attribute is present.
 Abstract attributes are defined using :py:class:`abstractattribute`.
 
@@ -91,8 +91,7 @@ Abstract attributes are defined using :py:class:`abstractattribute`.
 
     @pluginlib.Parent('parser')
     class Parser(object):
-
-        abstract_attribute = abstractattribute
+        abstract_attribute = pluginlib.abstractattribute
 
 
 .. _versions:
