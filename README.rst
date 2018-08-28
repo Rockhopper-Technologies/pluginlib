@@ -41,6 +41,54 @@ Overview
 
 Pluginlib makes creating plugins for your project simple.
 
+Features
+--------
+
+- Plugins are validated when they are imported
+
+- Plugins can be loaded through different mechanisms (modules, filesystem paths, `entry points`_)
+
+- Multiple versions_ of the same plugin are supported (The newest one is used by default)
+
+- Plugins can be `blacklisted`_ by type, name, or version
+
+- Multiple `plugin groups`_ are supported so one program can use multiple sets of plugins that won't conflict
+
+- Plugins support `conditional loading`_ (examples: os, version, installed software, etc)
+
+- Once loaded, plugins can be accessed_ through dictionary or dot notation
+
+Installation
+============
+
+PIP
+---
+
+.. code-block:: console
+
+    $ pip install pluginlib
+
+EL6 and EL7 (RHEL/CentOS/Scientific)
+------------------------------------
+
+(EPEL_ repositories must be configured_)
+
+.. code-block:: console
+
+    $ yum install python-pluginlib
+    $ yum install python34-pluginlib
+
+Fedora
+------
+
+.. code-block:: console
+
+    $ dnf install python2-pluginlib
+    $ dnf install python3-pluginlib
+
+Usage
+=====
+
 Step 1: Define plugin parent classes
 ------------------------------------
 
@@ -150,8 +198,13 @@ see the `Accessing Plugins`_ section.
 
 .. _Versions: http://pluginlib.readthedocs.io/en/latest/concepts.html#versions
 .. _Blacklists: http://pluginlib.readthedocs.io/en/latest/concepts.html#blacklists
+.. _blacklisted: http://pluginlib.readthedocs.io/en/latest/concepts.html#blacklists
 .. _Type Filters: http://pluginlib.readthedocs.io/en/latest/concepts.html#type-filters
 .. _Accessing Plugins: http://pluginlib.readthedocs.io/en/latest/concepts.html#accessing-plugins
+.. _accessed: http://pluginlib.readthedocs.io/en/latest/concepts.html#accessing-plugins
 .. _Abstract Methods: http://pluginlib.readthedocs.io/en/latest/concepts.html#abstract-methods
 .. _Conditional Loading: http://pluginlib.readthedocs.io/en/latest/concepts.html#conditional-loading
 .. _Plugin Groups: http://pluginlib.readthedocs.io/en/latest/concepts.html#plugin-groups
+
+.. _EPEL: https://fedoraproject.org/wiki/EPEL
+.. _configured: https://fedoraproject.org/wiki/EPEL#How_can_I_use_these_extra_packages.3F
