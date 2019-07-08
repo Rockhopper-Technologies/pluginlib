@@ -22,6 +22,10 @@ matrix:
       dist: xenial
       sudo: true
 
+    - python: "3.8-dev"
+      env: TOXENV=py38
+      dist: xenial
+
     - python: "3.5"
       env: TOXENV=py35
 
