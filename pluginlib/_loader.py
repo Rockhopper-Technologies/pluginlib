@@ -10,7 +10,6 @@
 Provides functions and classes for loading plugins
 """
 
-from collections import Iterable
 import importlib
 from inspect import ismodule
 import os
@@ -25,6 +24,12 @@ from pluginlib.exceptions import PluginImportError, EntryPointWarning
 from pluginlib._objects import BlacklistEntry
 from pluginlib._parent import get_plugins
 from pluginlib._util import BASESTRING, LOGGER, NoneType, raise_with_traceback
+
+try:
+    from collections.abc import Iterable
+except ImportError:   # pragma: no cover
+    # For Python < 3.3
+    from collections import Iterable
 
 
 def format_exception(etype, value, tback, limit=None):

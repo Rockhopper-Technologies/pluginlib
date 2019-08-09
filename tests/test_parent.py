@@ -44,7 +44,6 @@ class TestParent(TestCase):
         @parent.Parent('basic')
         class Basic(object):
             """Basic document string"""
-            pass
 
         self.assertTrue(issubclass(Basic, parent.Plugin))
         self.assertTrue(isinstance(Basic, parent.PluginType))
@@ -60,7 +59,6 @@ class TestParent(TestCase):
         @parent.Parent()
         class Basic(object):
             """Basic document string"""
-            pass
 
         self.assertEqual(Basic._type_, 'Basic')
         self.assertTrue('Basic' in parent.get_plugins()['_default'])
@@ -71,7 +69,6 @@ class TestParent(TestCase):
         @parent.Parent
         class Basic(object):
             """Basic document string"""
-            pass
 
         self.assertEqual(Basic._type_, 'Basic')
         self.assertTrue('Basic' in parent.get_plugins()['_default'])
@@ -81,12 +78,10 @@ class TestParent(TestCase):
 
         class Sample(object):
             """Sample Class"""
-            pass
 
         @parent.Parent('multiple_inheritence')
         class MultiInheritance(Sample):
             """TestMultiInheritance"""
-            pass
 
         self.assertTrue(issubclass(MultiInheritance, parent.Plugin))
         self.assertTrue(isinstance(MultiInheritance, parent.PluginType))
@@ -198,7 +193,6 @@ class TestPlugin(TestCase):
 
         class Child(self.parent):
             """No alias"""
-            pass
 
         self.assertTrue(issubclass(Child, self.parent))
         self.assertEqual(Child.name, 'Child')
@@ -356,7 +350,6 @@ class TestPluginType(TestCase):
             @abstractmethod
             def abstract(self):
                 """Abstract method"""
-                pass
 
         self.missing(Parent, 'Does not contain required method')
         self.meth(Parent)
@@ -375,7 +368,6 @@ class TestPluginType(TestCase):
             @abstractmethod
             def abstract(self, some_arg):
                 """Abstract method with another argument"""
-                pass
 
         self.meth(Parent, 'Argument spec does not match parent for method')
 
@@ -389,7 +381,6 @@ class TestPluginType(TestCase):
             @abstractstaticmethod
             def abstract():
                 """Abstract static method"""
-                pass
 
         self.missing(Parent, 'Does not contain required static method')
         self.meth(Parent, 'Does not contain required static method')
@@ -408,7 +399,6 @@ class TestPluginType(TestCase):
             @abstractstaticmethod
             def abstract(some_arg):
                 """Abstract static method with another argument"""
-                pass
 
         self.static(Parent, 'Argument spec does not match parent for method')
 
@@ -422,7 +412,6 @@ class TestPluginType(TestCase):
             @abstractclassmethod
             def abstract(cls):  # noqa: N805
                 """Abstract class method"""
-                pass
 
         self.missing(Parent, 'Does not contain required class method')
         self.meth(Parent, 'Does not contain required class method')
@@ -441,7 +430,6 @@ class TestPluginType(TestCase):
             @abstractclassmethod
             def abstract(cls, some_arg):  # noqa: N805
                 """Abstract class method with another argument"""
-                pass
 
         self.klass(Parent, 'Argument spec does not match parent for method')
 
@@ -455,7 +443,6 @@ class TestPluginType(TestCase):
             @abstractproperty
             def abstract(self):
                 """Abstract property"""
-                pass
 
         self.missing(Parent, 'Does not contain required property')
         self.meth(Parent, 'Does not contain required property')
@@ -502,7 +489,6 @@ class TestPluginType(TestCase):
 
             class Missing(parent_class):
                 """Does not have abstract method"""
-                pass
 
         self.check_method(parent_class, error, Missing, e)
 
@@ -516,7 +502,6 @@ class TestPluginType(TestCase):
 
                 def abstract(self):
                     """Regular method"""
-                    pass
 
         self.check_method(parent_class, error, Meth, e)
 
@@ -531,7 +516,6 @@ class TestPluginType(TestCase):
                 @staticmethod
                 def abstract():
                     """Static method"""
-                    pass
 
         self.check_method(parent_class, error, Static, e)
 
@@ -546,7 +530,6 @@ class TestPluginType(TestCase):
                 @classmethod
                 def abstract(cls):
                     """Class method"""
-                    pass
 
         self.check_method(parent_class, error, Klass, e)
 
@@ -561,7 +544,6 @@ class TestPluginType(TestCase):
                 @property
                 def abstract(self):
                     """Property"""
-                    pass
 
                 @abstract.setter
                 def abstract(self, value):

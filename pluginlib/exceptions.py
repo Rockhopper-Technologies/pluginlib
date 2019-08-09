@@ -51,8 +51,6 @@ class PluginImportError(PluginlibError):
 
     """
 
-    pass
-
 
 class PluginWarning(UserWarning):
     """
@@ -61,8 +59,6 @@ class PluginWarning(UserWarning):
     Subclass of :py:exc:`UserWarning`
     """
 
-    pass
-
 
 class EntryPointWarning(ImportWarning):
     """
@@ -70,5 +66,3 @@ class EntryPointWarning(ImportWarning):
 
     Subclass of :py:exc:`ImportWarning`
     """
-
-    pass
