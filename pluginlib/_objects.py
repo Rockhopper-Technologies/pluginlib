@@ -215,7 +215,8 @@ class PluginDict(CachingDict):
 
             if blackkey in blacklist_cache:
                 continue
-            elif blackkey in blacklist_cache_old:
+
+            if blackkey in blacklist_cache_old:
                 blacklist_cache[blackkey] = blacklist_cache_old[blackkey]
             else:
                 entry_cache = blacklist_cache[blackkey] = set()

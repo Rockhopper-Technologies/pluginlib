@@ -103,8 +103,9 @@ def _import_module(name, path=None):
                 if os.path.dirname(entry[0]) == path:
                     start = idx
                     break
+
                 # Find index for traceback starting with this file
-                elif os.path.splitext(entry[0])[0] == os.path.splitext(__file__)[0]:
+                if os.path.splitext(entry[0])[0] == os.path.splitext(__file__)[0]:
                     here = idx
 
         if start == 0 and isinstance(e, SyntaxError):
