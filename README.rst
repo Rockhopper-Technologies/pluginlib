@@ -4,31 +4,31 @@
 | |pypi| |supported-versions| |supported-implementations|
 | |fedora| |EPEL|
 
-.. |docs| image:: https://img.shields.io/readthedocs/pluginlib.svg?style=plastic
+.. |docs| image:: https://img.shields.io/readthedocs/pluginlib.svg?style=plastic&logo=read-the-docs
     :target: https://pluginlib.readthedocs.org
     :alt: Documentation Status
-.. |travis| image:: https://img.shields.io/travis/Rockhopper-Technologies/pluginlib.svg?style=plastic
+.. |travis| image:: https://img.shields.io/travis/Rockhopper-Technologies/pluginlib.svg?style=plastic&logo=travis
     :target: https://travis-ci.org/Rockhopper-Technologies/pluginlib
     :alt: Travis-CI Build Status
-.. |codecov| image:: https://img.shields.io/codecov/c/github/Rockhopper-Technologies/pluginlib.svg?style=plastic
+.. |codecov| image:: https://img.shields.io/codecov/c/github/Rockhopper-Technologies/pluginlib.svg?style=plastic&logo=codecov
     :target: https://codecov.io/gh/Rockhopper-Technologies/pluginlib
     :alt: Coverage Status
 
-.. |pypi| image:: https://img.shields.io/pypi/v/pluginlib.svg?style=plastic
+.. |pypi| image:: https://img.shields.io/pypi/v/pluginlib.svg?style=plastic&logo=pypi
     :alt: PyPI Package latest release
     :target: https://pypi.python.org/pypi/pluginlib
-.. |supported-versions| image:: https://img.shields.io/pypi/pyversions/pluginlib.svg?style=plastic
+.. |supported-versions| image:: https://img.shields.io/pypi/pyversions/pluginlib.svg?style=plastic&logo=pypi
     :alt: Supported versions
     :target: https://pypi.python.org/pypi/pluginlib
-.. |supported-implementations| image:: https://img.shields.io/pypi/implementation/pluginlib.svg?style=plastic
+.. |supported-implementations| image:: https://img.shields.io/pypi/implementation/pluginlib.svg?style=plastic&logo=pypi
     :alt: Supported implementations
     :target: https://pypi.python.org/pypi/pluginlib
 
-.. |fedora| image:: https://img.shields.io/badge/dynamic/json.svg?uri=https://pdc.fedoraproject.org/rest_api/v1/component-branches/?global_component=python-pluginlib;fields=name;active=true;type=rpm&query=$.results[?(@.name.startsWith(%22f%22))].name&label=Fedora&colorB=lightgray&style=plastic
+.. |fedora| image:: https://img.shields.io/badge/dynamic/json.svg?uri=https://pdc.fedoraproject.org/rest_api/v1/component-branches/?global_component=python-pluginlib;fields=name;active=true;type=rpm&query=$.results[?(@.name.startsWith(%22f%22))].name&label=Fedora&colorB=lightgray&style=plastic&logo=fedora
     :alt: Fedora version support
     :target: https://bodhi.fedoraproject.org/updates/?packages=python-pluginlib
 
-.. |EPEL| image:: https://img.shields.io/badge/dynamic/json.svg?uri=https://pdc.fedoraproject.org/rest_api/v1/component-branches/?global_component=python-pluginlib;fields=name;active=true;type=rpm&query=$.results[?(@.name.startsWith(%22e%22))].name&label=EPEL&colorB=lightgray&style=plastic
+.. |EPEL| image:: https://img.shields.io/badge/dynamic/json.svg?uri=https://pdc.fedoraproject.org/rest_api/v1/component-branches/?global_component=python-pluginlib;fields=name;active=true;type=rpm&query=$.results[?(@.name.startsWith(%22e%22))].name&label=EPEL&colorB=lightgray&style=plastic&logo=epel
     :alt: EPEL version support
     :target: https://bodhi.fedoraproject.org/updates/?packages=python-pluginlib
 
