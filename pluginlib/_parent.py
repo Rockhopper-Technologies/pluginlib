@@ -17,7 +17,7 @@ import warnings
 from pluginlib.exceptions import PluginWarning
 from pluginlib._objects import GroupDict, TypeDict, PluginDict
 from pluginlib._util import (allow_bare_decorator, ClassProperty, DictWithDotNotation,
-                             LOGGER, Result, Undefined)
+                             LOGGER, PY26, Result, Undefined)
 
 DEFAULT = '_default'
 UNDEFINED = Undefined()
@@ -31,8 +31,6 @@ try:
 
 except NameError:
     STR = str
-
-PY26 = sys.version_info[:2] < (2, 7)
 
 # pylint: disable=protected-access
 

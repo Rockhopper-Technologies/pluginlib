@@ -19,8 +19,11 @@ import operator as _operator
 import sys
 
 
+PY26 = sys.version_info[:2] < (2, 7)
+
+
 # Setup logger
-if sys.version_info[:2] < (2, 7):  # pragma: no branch
+if PY26:  # pragma: no branch
 
     class NullHandler(logging.Handler):  # pragma: no cover
         """NullHandler for Python 2.6"""
