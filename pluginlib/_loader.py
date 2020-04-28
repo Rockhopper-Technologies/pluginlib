@@ -359,12 +359,19 @@ class PluginLoader(object):
         Returns:
             dict: Nested dictionary of plugins accessible through dot-notation.
 
-        Similar to :py:attr:`plugins`, but lowest level is a regular dictionary of
-        all unfiltered plugin versions for the given plugin type and name.
+        Similar to :py:attr:`plugins`, but lowest level is an :py:class:`~collections.OrderedDict`
+        of all unfiltered plugin versions for the given plugin type and name.
 
         Parent types are always included.
         Child plugins will only be included if at least one valid, non-blacklisted plugin
         is available.
+
+        The newest plugin can be retrieved by accessing the last item in the dictionary.
+
+        .. code-block:: python
+
+            plugins = loader.plugins_all
+            tuple(plugins.parser.json.values())[-1]
         """
 
         if not self.loaded:

@@ -52,6 +52,7 @@ spelling-ignore-words=
     KeyError,
     Metaclass, metaclass, Mixin, mixin, Mozilla, MPL, MRO,
     namespace, noqa,
+    OrderedDict,
     Pluginlib, pluginlib, PluginlibError, PluginLoader, PluginWarning, popitem, pragma, py, pypy,
     repr,
     setdefault, sphinxcontrib, str, Skipload, staticmethod,

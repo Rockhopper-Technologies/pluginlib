@@ -302,7 +302,8 @@ class TestPluginDict(TestCase):
         self.assertEqual(len(self.udict._cache['blacklist']), 1)
         self.assertEqual(self.udict._cache['blacklist'][('3.0', '==')], set(['3.0']))
 
-        self.assertEqual(self.udict._filter(blacklist), {'2.0': 'dos', '1.0': 'uno'})
+        self.assertEqual(self.udict._filter(blacklist),
+                         objects.OrderedDict([('1.0', 'uno'), ('2.0', 'dos')]))
 
         # Another entry is cached, result is the same
         blacklist.append(objects.BlacklistEntry(None, None, '1.0'))
@@ -310,20 +311,22 @@ class TestPluginDict(TestCase):
         self.assertEqual(len(self.udict._cache['blacklist']), 2)
         self.assertEqual(self.udict._cache['blacklist'][('1.0', '==')], set(['1.0']))
 
-        self.assertEqual(self.udict._filter(blacklist), {'2.0': 'dos'})
+        self.assertEqual(self.udict._filter(blacklist),
+                         objects.OrderedDict([('2.0', 'dos')]))
 
         # An equivalent entry is added, cache is the same
         blacklist.append(objects.BlacklistEntry(None, 'number', '3.0', '=='))
         self.assertEqual(self.udict._filter(blacklist, newest_only=True), 'dos')
         self.assertEqual(len(self.udict._cache['blacklist']), 2)
 
-        self.assertEqual(self.udict._filter(blacklist), {'2.0': 'dos'})
+        self.assertEqual(self.udict._filter(blacklist),
+                         objects.OrderedDict([('2.0', 'dos')]))
 
     def test_no_result(self):
         """Blacklist filters all"""
         blacklist = [objects.BlacklistEntry(None, None, '4.0', '<')]
 
-        self.assertIsNone(self.udict._filter(blacklist))
+        self.assertEqual(self.udict._filter(blacklist), objects.OrderedDict())
         self.assertEqual(self.udict._cache['blacklist'][('4.0', '<')], set(['1.0', '2.0', '3.0']))
 
         self.assertIsNone(self.udict._filter(blacklist, newest_only=True))

@@ -12,7 +12,13 @@ This module contains pluginlib object classes
 
 from pkg_resources import parse_version
 
-from pluginlib._util import CachingDict, DictWithDotNotation, OPERATORS, BASESTRING
+from pluginlib._util import BASESTRING, CachingDict, DictWithDotNotation, OPERATORS, PY26
+
+
+if PY26:
+    from ordereddict import OrderedDict  # pylint: disable=import-error  # pragma: no cover
+else:
+    from collections import OrderedDict
 
 
 class BlacklistEntry(object):
@@ -262,8 +268,10 @@ class PluginDict(CachingDict):
                             break
                     # If no keys are left, None will be returned
                 else:
-                    rtn = dict((key, val) for key, val in self.items() if key not in blacklist) \
-                          or None
+                    rtn = OrderedDict()
+                    for key in self._sorted_keys():
+                        if key not in blacklist:
+                            rtn[key] = self[key]
 
             elif version:
                 rtn = self.get(version, None)
@@ -272,6 +280,6 @@ class PluginDict(CachingDict):
                 rtn = self[self._sorted_keys()[-1]]
 
             else:
-                rtn = dict(self)
+                rtn = OrderedDict((key, self[key]) for key in self._sorted_keys())
 
         return rtn
