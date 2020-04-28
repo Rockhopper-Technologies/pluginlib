@@ -7,7 +7,7 @@
 
 :github_url: https://github.com/Rockhopper-Technologies/pluginlib
 
-.. py:module:: pluginlib
+.. py:currentmodule:: pluginlib
 
 Frequently Asked Questions
 ==========================
