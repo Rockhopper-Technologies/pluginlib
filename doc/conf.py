@@ -17,8 +17,6 @@
 import os
 import sys
 
-from sphinx.ext.autodoc import FunctionDocumenter
-
 sys.path.insert(0, os.path.abspath('..'))
 
 from setup_helpers import get_version  # noqa: E402
@@ -110,18 +108,3 @@ htmlhelp_basename = '%sdoc' % project
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
-
-
-class DecoratorDocumenter(FunctionDocumenter):
-    """
-    Specialized Documenter subclass for decorator functions.
-    """
-    objtype = 'decorator'
-
-    def format_args(self):
-        args = super(DecoratorDocumenter, self).format_args()
-        return args if ',' in args else None
-
-
-def setup(app):
-    app.add_autodocumenter(DecoratorDocumenter)
