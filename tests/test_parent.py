@@ -569,14 +569,14 @@ class TestPluginType(TestCase):
     def test_duplicate_parents(self):
         """Parents with the same plugin type should raise an error"""
 
-        @parent.Parent('test_parent')  # pylint: disable=unused-variable
-        class Parent1(object):
+        @parent.Parent('test_parent')
+        class Parent1(object):  # pylint: disable=unused-variable
             """First Parent"""
 
         with self.assertRaisesRegex(ValueError, "parent must be unique"):
 
-            @parent.Parent('test_parent')  # pylint: disable=unused-variable
-            class Parent2(object):
+            @parent.Parent('test_parent')
+            class Parent2(object):  # pylint: disable=unused-variable
                 """Second Parent"""
 
     def test_duplicate_versions(self):
