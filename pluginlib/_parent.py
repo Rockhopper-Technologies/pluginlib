@@ -19,6 +19,12 @@ from pluginlib._objects import GroupDict, TypeDict, PluginDict
 from pluginlib._util import (allow_bare_decorator, ClassProperty, DictWithDotNotation,
                              LOGGER, PY26, Result, Undefined)
 
+try:
+    from asyncio import iscoroutinefunction
+except ImportError:  # pragma: no cover
+    iscoroutinefunction = lambda func: False  # noqa: E731
+
+
 DEFAULT = '_default'
 UNDEFINED = Undefined()
 
@@ -101,6 +107,10 @@ def _check_methods(cls, subclass):  # pylint: disable=too-many-branches
 
         if result:
             return result
+
+        # If abstract is a coroutine method, child should be too
+        if iscoroutinefunction(methobj) and not iscoroutinefunction(submethobj):
+            return Result(False, 'Does not contain required coroutine method (%s)' % meth, 215)
 
     return Result(True, None, 0)
 

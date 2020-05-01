@@ -43,7 +43,7 @@ spelling-ignore-words=
     assertRaisesRegexp, assertNotRegexpMatches, assertRegexpMatches,
     attr, autoattribute, Args, Avram, Lubkin,
     BlacklistEntry, bool, Boolean,
-    classmethod, cls,
+    classmethod, cls, coroutine,
     EntryPointWarning, errorcode, exc,
     func,
     getset,

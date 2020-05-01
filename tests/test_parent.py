@@ -9,13 +9,18 @@
 """
 
 import sys
+import textwrap
 import warnings
 
 from pluginlib import (abstractmethod, abstractproperty, abstractstaticmethod,
                        abstractclassmethod, abstractattribute)
 import pluginlib._parent as parent
 
-from tests import TestCase, OUTPUT
+from tests import OUTPUT, TestCase, unittest
+
+
+NO_ASYNC = sys.version_info[:2] < (3, 5)
+
 
 # pylint: disable=protected-access, no-member
 
@@ -357,6 +362,7 @@ class TestPluginType(TestCase):
         self.klass(Parent, 'Does not contain required method')
         self.prop(Parent, 'Does not contain required method')
         self.attr(Parent, 'Does not contain required method')
+        self.coroutine(Parent)
 
     def test_abs_method_argspec(self):
         """Method argument spec must match"""
@@ -467,6 +473,32 @@ class TestPluginType(TestCase):
         self.prop(Parent)
         self.attr(Parent)
 
+    @unittest.skipIf(NO_ASYNC, 'Requires Python 3.5+')
+    def test_abstract_coroutine(self):
+        """Attribute required in subclass"""
+
+        @parent.Parent('test_parent')
+        class Parent(object):
+            """Parent with abstract coroutine"""
+
+            class_definition = textwrap.dedent('''\
+            @abstractmethod
+            async def abstract(self):
+                """Abstract coroutine method"""
+            ''')
+
+            local_rtn = {}
+            exec(class_definition, globals(), local_rtn)  # pylint: disable=exec-used
+            abstract = local_rtn['abstract']
+
+        self.missing(Parent, 'Does not contain required method')
+        self.meth(Parent, 'Does not contain required coroutine method')
+        self.static(Parent, 'Does not contain required method')
+        self.klass(Parent, 'Does not contain required method')
+        self.prop(Parent, 'Does not contain required method')
+        self.attr(Parent, 'Does not contain required method')
+        self.coroutine(Parent)
+
     def check_method(self, parent_class, error, child, e):
         """Check child methods"""
 
@@ -565,6 +597,27 @@ class TestPluginType(TestCase):
                 abstract = 'No one expects the abstract attribute'
 
         self.check_method(parent_class, error, Attr, e)
+
+    def coroutine(self, parent_class, error=None):
+        """Test abstract coroutine method"""
+
+        if NO_ASYNC:
+            return
+
+        with warnings.catch_warnings(record=True) as e:
+
+            class_definition = textwrap.dedent('''\
+            class Coroutine(parent_class):
+                """Only has coroutine method"""
+                async def abstract(self):
+                    """Coroutine method"""
+            ''')
+
+            local_rtn = {'parent_class': parent_class}
+            exec(class_definition, globals(), local_rtn)  # pylint: disable=exec-used
+            Coroutine = local_rtn['Coroutine']  # pylint: disable=invalid-name
+
+        self.check_method(parent_class, error, Coroutine, e)
 
     def test_duplicate_parents(self):
         """Parents with the same plugin type should raise an error"""
