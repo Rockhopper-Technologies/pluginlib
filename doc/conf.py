@@ -51,7 +51,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'Pluginlib'
-copyright = '2018, Avram Lubkin'
+copyright = '2018 - 2020, Avram Lubkin'
 author = 'Avram Lubkin'
 
 # The version info for the project you're documenting, acts as replacement for
