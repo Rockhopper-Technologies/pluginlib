@@ -189,22 +189,22 @@ see the `Accessing Plugins`_ section.
 
 .. _Entry points: https://packaging.python.org/specifications/entry-points/
 
-.. _PluginLoader: http://pluginlib.readthedocs.io/en/latest/api.html#pluginlib.PluginLoader
-.. _PluginLoader.plugins: http://pluginlib.readthedocs.io/en/latest/api.html#pluginlib.PluginLoader.plugins
-.. _@Parent: http://pluginlib.readthedocs.io/en/latest/api.html#pluginlib.Parent
-.. _\_alias\_: http://pluginlib.readthedocs.io/en/latest/api.html#pluginlib.Plugin._alias_
-.. _\_version\_: http://pluginlib.readthedocs.io/en/latest/api.html#pluginlib.Plugin._version_
-.. _\_skipload\_: http://pluginlib.readthedocs.io/en/latest/api.html#pluginlib.Plugin._skipload_
+.. _PluginLoader: http://pluginlib.readthedocs.io/en/stable/api.html#pluginlib.PluginLoader
+.. _PluginLoader.plugins: http://pluginlib.readthedocs.io/en/stable/api.html#pluginlib.PluginLoader.plugins
+.. _@Parent: http://pluginlib.readthedocs.io/en/stable/api.html#pluginlib.Parent
+.. _\_alias\_: http://pluginlib.readthedocs.io/en/stable/api.html#pluginlib.Plugin._alias_
+.. _\_version\_: http://pluginlib.readthedocs.io/en/stable/api.html#pluginlib.Plugin._version_
+.. _\_skipload\_: http://pluginlib.readthedocs.io/en/stable/api.html#pluginlib.Plugin._skipload_
 
-.. _Versions: http://pluginlib.readthedocs.io/en/latest/concepts.html#versions
-.. _Blacklists: http://pluginlib.readthedocs.io/en/latest/concepts.html#blacklists
-.. _blacklisted: http://pluginlib.readthedocs.io/en/latest/concepts.html#blacklists
-.. _Type Filters: http://pluginlib.readthedocs.io/en/latest/concepts.html#type-filters
-.. _Accessing Plugins: http://pluginlib.readthedocs.io/en/latest/concepts.html#accessing-plugins
-.. _accessed: http://pluginlib.readthedocs.io/en/latest/concepts.html#accessing-plugins
-.. _Abstract Methods: http://pluginlib.readthedocs.io/en/latest/concepts.html#abstract-methods
-.. _Conditional Loading: http://pluginlib.readthedocs.io/en/latest/concepts.html#conditional-loading
-.. _Plugin Groups: http://pluginlib.readthedocs.io/en/latest/concepts.html#plugin-groups
+.. _Versions: http://pluginlib.readthedocs.io/en/stable/concepts.html#versions
+.. _Blacklists: http://pluginlib.readthedocs.io/en/stable/concepts.html#blacklists
+.. _blacklisted: http://pluginlib.readthedocs.io/en/stable/concepts.html#blacklists
+.. _Type Filters: http://pluginlib.readthedocs.io/en/stable/concepts.html#type-filters
+.. _Accessing Plugins: http://pluginlib.readthedocs.io/en/stable/concepts.html#accessing-plugins
+.. _accessed: http://pluginlib.readthedocs.io/en/stable/concepts.html#accessing-plugins
+.. _Abstract Methods: http://pluginlib.readthedocs.io/en/stable/concepts.html#abstract-methods
+.. _Conditional Loading: http://pluginlib.readthedocs.io/en/stable/concepts.html#conditional-loading
+.. _Plugin Groups: http://pluginlib.readthedocs.io/en/stable/concepts.html#plugin-groups
 
 .. _EPEL: https://fedoraproject.org/wiki/EPEL
 .. _configured: https://fedoraproject.org/wiki/EPEL#How_can_I_use_these_extra_packages.3F
