@@ -54,19 +54,23 @@ else:
     BASESTRING = str
 
 
+def raise_with_traceback(exc, tback):  # pragma: no cover
+    """
+    Placeholder for version-specific implementation
+    """
+    raise NotImplementedError
+
+
 # Attempt to make a Python 2/3 compatible way to raise with a traceback
 # pylint: disable=exec-used
 if sys.version_info[0] < 3:  # pragma: no branch
     exec("""def raise_with_traceback(exc, tback):  # pragma: no cover
     raise exc.__class__, exc, tback
 """)
-# pylint: enable=exec-used
 else:
-    def raise_with_traceback(exc, tback):
-        """
-        Python 3 compatible raise statement
-        """
-        raise exc.with_traceback(tback)
+    exec("""def raise_with_traceback(exc, tback):
+    raise exc.with_traceback(tback) from None
+""")
 
 
 class ClassProperty(object):
