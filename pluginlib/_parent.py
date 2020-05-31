@@ -298,6 +298,22 @@ class Plugin(object):
 
         return cls._alias_ or cls.__name__  # pylint: disable=no-member
 
+    @ClassProperty
+    def plugin_type(cls):  # noqa: N805  # pylint: disable=no-self-argument
+        """
+        :py:class:`str` -- `plugin_type` of parent class
+        """
+
+        return cls._type_  # pylint: disable=no-member
+
+    @ClassProperty
+    def plugin_group(cls):  # noqa: N805  # pylint: disable=no-self-argument
+        """
+        :py:class:`str` -- `group` of parent class
+        """
+
+        return cls._group_  # pylint: disable=no-member
+
 
 @allow_bare_decorator
 class Parent(object):

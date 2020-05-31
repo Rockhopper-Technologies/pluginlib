@@ -193,6 +193,38 @@ class TestPlugin(TestCase):
         # Clear plugins from module
         parent.get_plugins().clear()
 
+    def test_plugin_type(self):
+        """plugin_type property is passed from parent"""
+        self.assertEqual(self.parent.plugin_type, 'test_parent')
+
+        class Child(self.parent):
+            """Child has same plugin_type"""
+
+        self.assertEqual(Child.plugin_type, 'test_parent')
+
+    def test_plugin_group_none(self):
+        """plugin_group property is passed from parent"""
+        self.assertEqual(self.parent.plugin_group, None)
+
+        class Child(self.parent):
+            """Child has same plugin_group"""
+
+        self.assertEqual(Child.plugin_group, None)
+
+    def test_plugin_group(self):
+        """plugin_group property is passed from parent"""
+
+        @parent.Parent('test_parent', group='A-Team')
+        class Parent(object):
+            """Parent"""
+
+        self.assertEqual(Parent.plugin_group, 'A-Team')
+
+        class Child(Parent):
+            """Child has same plugin_group"""
+
+        self.assertEqual(Child.plugin_group, 'A-Team')
+
     def test_alias_none(self):
         """name attribute is class name"""
 
