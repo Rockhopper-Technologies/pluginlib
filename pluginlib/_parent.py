@@ -236,6 +236,9 @@ class PluginType(type):
         return new
 
     def _get_plugins(cls):
+        """
+        Return registered plugins
+        """
 
         return cls.__plugins[cls._group_ if cls._group_ else DEFAULT][cls._type_]
 
