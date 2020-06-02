@@ -1,5 +1,5 @@
 [MASTER]
-ignore=bad.py
+ignore=syntax.py
 
 [REPORTS]
 output-format=colorized
@@ -46,7 +46,7 @@ spelling-ignore-words=
     abstractattribute, abstractmethod, abstractclassmethod, abstractstaticmethod,
     assertRaisesRegexp, assertNotRegexpMatches, assertRegexpMatches,
     attr, autoattribute, Args, Avram, Lubkin,
-    BlacklistEntry, bool, Boolean,
+    basename, BlacklistEntry, bool, Boolean,
     classmethod, cls, coroutine,
     EntryPointWarning, errorcode, exc,
     func,

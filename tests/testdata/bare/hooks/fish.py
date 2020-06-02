@@ -5,18 +5,19 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 """
-**Steam engine**
+**Fish hook**
 Test data standard library
 """
 
 from __future__ import absolute_import
-from tests.testdata.parents import Engine
+from tests.testdata.parents import Hook
 
 
-class Steam(Engine):
-    """Dummy steam engine"""
+class Fish(Hook):
+    """Dummy fish hook"""
 
-    _alias_ = 'steam'
+    _alias_ = 'fish'
 
-    def start(self):
-        return 'toot'
+    def hook(self):
+        """Throw hook"""
+        return self._alias_

@@ -50,6 +50,47 @@ def format_exception(etype, value, tback, limit=None):
     return rtn
 
 
+def _raise_friendly_exception(exc, name, path):
+    """
+    Attempt to create a friendly traceback that only shows the errors
+    encountered from the plugin import and no the framework
+    """
+
+    etype = exc.__class__
+    tback = getattr(exc, '__traceback__', sys.exc_info()[2])
+
+    # Create traceback starting at module for friendly output
+    start = 0
+    here = 0
+    tb_list = traceback.extract_tb(tback)
+
+    if path:
+        for idx, entry in enumerate(tb_list):
+            # Find index for traceback starting with module we tried to load
+            if os.path.dirname(entry[0]) == path:
+                start = idx
+                break
+
+            # Find index for traceback starting with this file
+            if os.path.splitext(entry[0])[0] == os.path.splitext(__file__)[0]:
+                here = idx
+
+    if start == 0 and isinstance(exc, SyntaxError):
+        limit = 0
+    else:
+        limit = 0 - len(tb_list) + max(start, here)
+
+    # pylint: disable=wrong-spelling-in-comment
+    # friendly = ''.join(traceback.format_exception(etype, exc, tback, limit))
+    friendly = ''.join(format_exception(etype, exc, tback, limit))
+
+    # Format exception
+    msg = 'Error while importing candidate plugin module %s from %s' % (name, path)
+    exception = PluginImportError('%s: %s' % (msg, repr(exc)), friendly=friendly)
+
+    raise_with_traceback(exception, tback)
+
+
 def _import_module(name, path=None):
     """
     Args:
@@ -88,40 +129,7 @@ def _import_module(name, path=None):
             mod = importlib.import_module(name)
 
     except Exception as e:  # pylint: disable=broad-except
-
-        etype = e.__class__
-        tback = getattr(e, '__traceback__', sys.exc_info()[2])
-
-        # Create traceback starting at module for friendly output
-        start = 0
-        here = 0
-        tb_list = traceback.extract_tb(tback)
-
-        if path:
-            for idx, entry in enumerate(tb_list):
-                # Find index for traceback starting with module we tried to load
-                if os.path.dirname(entry[0]) == path:
-                    start = idx
-                    break
-
-                # Find index for traceback starting with this file
-                if os.path.splitext(entry[0])[0] == os.path.splitext(__file__)[0]:
-                    here = idx
-
-        if start == 0 and isinstance(e, SyntaxError):
-            limit = 0
-        else:
-            limit = 0 - len(tb_list) + max(start, here)
-
-        # pylint: disable=wrong-spelling-in-comment
-        # friendly = ''.join(traceback.format_exception(etype, e, tback, limit))
-        friendly = ''.join(format_exception(etype, e, tback, limit))
-
-        # Format exception
-        msg = 'Error while importing candidate plugin module %s from %s' % (name, path)
-        exception = PluginImportError('%s: %s' % (msg, repr(e)), friendly=friendly)
-
-        raise_with_traceback(exception, tback)
+        _raise_friendly_exception(e, name, path)
 
     return mod
 
@@ -139,8 +147,53 @@ def _recursive_import(package):
     path = getattr(package, '__path__', None)
 
     if path:
-        for submod in pkgutil.walk_packages(path, prefix=prefix):
-            _import_module(submod[1], submod[0].path)
+        # pylint: disable=unused-variable
+        for finder, name, is_pkg in pkgutil.walk_packages(path, prefix=prefix):
+            _import_module(name, finder.path)
+
+
+def _recursive_path_import(path, prefix_package):
+    """
+    Args:
+        path(str): Path to walk
+        prefix_package(str): Prefix to apply to found modules
+
+    Import all modules from a path recursively
+
+    If a python package is found, it is imported recursively,
+    however, the directory walk will stop on the directory of the package
+    and Python files under the package that are in directories without
+    init files, will be skipped.
+    """
+
+    # Include basename of path in module prefix
+    basename = os.path.basename(path.strip('/'))
+    root_prefix = '%s.%s.' % (prefix_package, basename)
+    prefix_template = '%s%%s.' % root_prefix
+
+    # Walk path
+    for root, dirs, files in os.walk(path):
+        # If root is a Python module, we won't walk any farther down it
+        if '__init__.py' in files and sys.version_info[0] > 2:
+            dirs.clear()
+            if root != path:
+                continue
+
+        # Generate prefix
+        if root == path:
+            prefix = root_prefix
+        else:
+            relpath = os.path.relpath(root, path)
+            prefix = prefix_template % relpath.replace(os.sep, '.')
+
+        # Walk root and import modules
+        # pylint: disable=unused-variable
+        for finder, name, is_pkg in pkgutil.walk_packages([root], prefix=prefix):
+            LOGGER.debug('Attempting to load module %s from %s', name, finder.path)
+            try:
+                finder.find_module(name).load_module(name)
+            except Exception as e:  # pylint: disable=broad-except
+                _raise_friendly_exception(e, name, root)
 
 
 # pylint: disable=too-many-instance-attributes,too-many-arguments
@@ -303,28 +356,14 @@ class PluginLoader(object):
 
         # Load auxiliary paths
         if self.paths:
-            auth_paths_mod = importlib.import_module(self.prefix_package)
-            initial_path = auth_paths_mod.__path__[:]
-
-            # Append each path to module path
+            # Import each path recursively
             for path in self.paths:
-
                 modpath = os.path.realpath(path)
                 if os.path.isdir(modpath):
-                    LOGGER.info('Adding %s as a plugin search path', path)
-                    if modpath not in auth_paths_mod.__path__:
-                        auth_paths_mod.__path__.append(modpath)
-
+                    LOGGER.info("Recursively importing plugins from path `%s`", path)
+                    _recursive_path_import(path, self.prefix_package)
                 else:
                     LOGGER.info("Configured plugin path '%s' is not a valid directory", path)
-
-            # Walk packages
-            try:
-                _recursive_import(auth_paths_mod)
-
-            finally:
-                # Restore Path
-                auth_paths_mod.__path__[:] = initial_path
 
         self.loaded = True
 

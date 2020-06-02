@@ -16,7 +16,7 @@ from pkg_resources import Distribution, EntryPoint, working_set
 
 import pluginlib._loader as loader
 from pluginlib._objects import OrderedDict
-from pluginlib import BlacklistEntry, PluginImportError, EntryPointWarning
+from pluginlib import BlacklistEntry, PluginImportError, EntryPointWarning, PluginWarning
 
 from tests import TestCase, OUTPUT, mock
 import tests.testdata
@@ -284,7 +284,32 @@ class TestPluginLoader(TestCase):
         self.assertEqual(len(plugins.engine), 1)
         self.assertTrue('steam' in plugins.engine)
 
-        self.assertEqual(plugins.engine.steam.__module__, 'pluginlib.importer.steam')
+        self.assertEqual(plugins.engine.steam.__module__, 'pluginlib.importer.engines.steam')
+
+    def test_load_paths_bare(self):
+        """Load modules from paths without init file"""
+
+        path = os.path.join(DATAPATH, 'bare')
+        ploader = loader.PluginLoader(group='testdata', paths=[path])
+        plugins = ploader.plugins
+
+        self.assertEqual(len(plugins), 3)
+        self.assertTrue('parser' in plugins)
+        self.assertTrue('engine' in plugins)
+        self.assertTrue('hook' in plugins)
+
+        self.assertEqual(len(plugins.parser), 1)
+        self.assertTrue('sillywalk' in plugins.parser)
+
+        self.assertEqual(len(plugins.hook), 2)
+        self.assertTrue('fish' in plugins.hook)
+        self.assertTrue('grappling' in plugins.hook)
+
+        self.assertEqual(len(plugins.engine), 1)
+        self.assertTrue('electric' in plugins.engine)
+
+        self.assertEqual(plugins.engine.electric.__module__,
+                         'pluginlib.importer.bare.engines.electric')
 
     def test_load_paths_prefix_pkg(self):
         """Load modules from paths with alternate prefix package"""
@@ -305,7 +330,7 @@ class TestPluginLoader(TestCase):
         self.assertEqual(len(plugins.engine), 1)
         self.assertTrue('steam' in plugins.engine)
 
-        self.assertEqual(plugins.engine.steam.__module__, 'tests.testdata.importer.steam')
+        self.assertEqual(plugins.engine.steam.__module__, 'tests.testdata.importer.engines.steam')
 
     def test_type_filter(self):
         """Filter plugin types"""
@@ -335,8 +360,16 @@ class TestPluginLoader(TestCase):
         """Ignore duplicate paths"""
 
         path = os.path.join(DATAPATH, 'lib', 'engines')
-        ploader = loader.PluginLoader(group='testdata', paths=[path, path])
-        plugins = ploader.plugins
+
+        with warnings.catch_warnings(record=True) as e:
+
+            warnings.simplefilter("always")
+            ploader = loader.PluginLoader(group='testdata', paths=[path, path])
+            plugins = ploader.plugins
+
+            self.assertEqual(len(e), 1)
+            self.assertTrue(issubclass(e[-1].category, PluginWarning))
+            self.assertRegex(str(e[-1].message), 'Duplicate plugins found')
 
         self.assertEqual(len(plugins.engine), 1)
         self.assertTrue('steam' in plugins.engine)
@@ -344,13 +377,13 @@ class TestPluginLoader(TestCase):
     def test_bad_import(self):
         """Syntax error in imported module"""
 
-        ploader = loader.PluginLoader(group='testdata', modules=['tests.testdata.bad'])
-        error = 'Error while importing candidate plugin module tests.testdata.bad'
+        ploader = loader.PluginLoader(group='testdata', modules=['tests.testdata.bad.syntax'])
+        error = 'Error while importing candidate plugin module tests.testdata.bad.syntax'
         with self.assertRaisesRegex(PluginImportError, error) as e:
             ploader.plugins  # pylint: disable=pointless-statement
 
         self.assertRegex(e.exception.friendly, 'SyntaxError: invalid syntax')
-        self.assertRegex(e.exception.friendly, 'tests.testdata.bad')
+        self.assertRegex(e.exception.friendly, 'tests.testdata.bad.syntax')
         self.assertRegex(e.exception.friendly, 'line 12')
 
     def test_bad_import2(self):
@@ -364,6 +397,19 @@ class TestPluginLoader(TestCase):
         self.assertRegex(e.exception.friendly, 'RuntimeError: This parrot is no more')
         self.assertRegex(e.exception.friendly, 'tests.testdata.bad2')
         self.assertRegex(e.exception.friendly, 'line 24')
+
+    def test_bad_import_path(self):
+        """Syntax error in imported module loaded by path"""
+
+        path = os.path.join(DATAPATH, 'bad')
+        ploader = loader.PluginLoader(group='testdata', paths=[path])
+        error = 'Error while importing candidate plugin module pluginlib.importer.bad.syntax'
+        with self.assertRaisesRegex(PluginImportError, error) as e:
+            ploader.plugins  # pylint: disable=pointless-statement
+
+        self.assertRegex(e.exception.friendly, 'SyntaxError: invalid syntax')
+        self.assertRegex(e.exception.friendly, 'testdata/bad/syntax.py')
+        self.assertRegex(e.exception.friendly, 'line 12')
 
     def test_plugins(self):
         """plugins only loads modules on the first call"""

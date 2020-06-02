@@ -5,18 +5,18 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 """
-**Steam engine**
+**Silly Walk parser**
 Test data standard library
 """
 
 from __future__ import absolute_import
-from tests.testdata.parents import Engine
+from tests.testdata.parents import Parser
 
 
-class Steam(Engine):
-    """Dummy steam engine"""
+class SillyWalk(Parser):
+    """Dummy silly walk parser"""
 
-    _alias_ = 'steam'
+    _alias_ = 'sillywalk'
 
-    def start(self):
-        return 'toot'
+    def parse(self):
+        return 'sillywalk'

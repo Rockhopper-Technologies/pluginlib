@@ -5,7 +5,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 """
-**Steam engine**
+**Electric engine**
 Test data standard library
 """
 
@@ -13,10 +13,10 @@ from __future__ import absolute_import
 from tests.testdata.parents import Engine
 
 
-class Steam(Engine):
-    """Dummy steam engine"""
+class Electric(Engine):
+    """Dummy electric engine"""
 
-    _alias_ = 'steam'
+    _alias_ = 'electric'
 
     def start(self):
-        return 'toot'
+        return 'beep'
