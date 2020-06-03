@@ -11,7 +11,6 @@ This module contains generic functions for use in other modules
 """
 
 from abc import abstractmethod
-from collections import namedtuple
 from functools import update_wrapper, wraps
 from inspect import isclass
 import logging
@@ -45,7 +44,6 @@ OPERATORS = {'=': _operator.eq,
              '>=': _operator.ge}
 
 
-Result = namedtuple('Result', ('valid', 'message', 'errorcode'))
 NoneType = type(None)
 
 if sys.version_info[0] < 3:  # pragma: no branch

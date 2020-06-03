@@ -399,6 +399,24 @@ class TestPluginType(TestCase):
         self.type_hints_1(Parent)
         self.type_hints_2(Parent)
 
+    def test_multiple_methods(self):
+        """Method required in subclass"""
+
+        @parent.Parent('test_parent')
+        class Parent(object):
+            """Parent with abstract class method"""
+
+            @abstractmethod
+            def abstract2(self):
+                """Abstract method"""
+
+            @abstractmethod
+            def abstract(self):
+                """Abstract method"""
+
+        self.meth(Parent, 'Does not contain required method')
+        self.multiple(Parent)
+
     def test_abs_method_argspec(self):
         """Method argument spec must match"""
 
@@ -590,6 +608,22 @@ class TestPluginType(TestCase):
                 """Only has regular method"""
 
                 def abstract(self):
+                    """Regular method"""
+
+        self.check_method(parent_class, error, Meth, e)
+
+    def multiple(self, parent_class, error=None):
+        """Test abstract method is a regular method"""
+
+        with warnings.catch_warnings(record=True) as e:
+
+            class Meth(parent_class):
+                """Only has regular method"""
+
+                def abstract(self):
+                    """Regular method"""
+
+                def abstract2(self):
                     """Regular method"""
 
         self.check_method(parent_class, error, Meth, e)

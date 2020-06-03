@@ -17,7 +17,7 @@ import warnings
 from pluginlib.exceptions import PluginWarning
 from pluginlib._objects import GroupDict, TypeDict, PluginDict
 from pluginlib._util import (allow_bare_decorator, ClassProperty, DictWithDotNotation,
-                             LOGGER, PY26, Result, Undefined)
+                             LOGGER, PY26, Undefined)
 
 try:
     from asyncio import iscoroutinefunction
@@ -38,127 +38,21 @@ try:
 except NameError:
     STR = str
 
-# pylint: disable=protected-access
 
-
-def _compare_argspec(spec_1, spec_2):
-    """
-    Args:
-        cls(:py:class:`inspect.FullArgSpec`): Argument spec
-        cls(:py:class:`inspect.FullArgSpec`): Argument spec
-
-    Returns:
-        bool: True if argspecs match
-
-    Compares two argspecs skipping type annotations
-    """
-
-    spec_1_dict = spec_1._asdict()
-    spec_2_dict = spec_2._asdict()
-
-    for key, val in spec_1_dict.items():
-        # Annotations are checked separately
-        if key == 'annotations':
-            continue
-        if spec_2_dict[key] != val:
-            return False
-
-    return True
-
-
-def _check_methods(cls, subclass):  # pylint: disable=too-many-branches
+class ClassInspector(object):
     """
     Args:
         cls(:py:class:`Plugin`): Parent class
         subclass(:py:class:`Plugin`): Subclass to evaluate
 
-    Returns:
-        Result: Named tuple
+    Inspects subclass for inclusion
+    After initialization, the following attributes are set:
 
-    Validate abstract methods are defined in subclass
-    For error codes see _inspect_class
-    """
+    errorcode
+        A code corresponding to the error condition
 
-    for meth, methobj in cls.__abstractmethods__.items():
-
-        # Need to get attribute from dictionary for instance tests to work
-        for base in subclass.__mro__:  # pragma: no branch
-            if meth in base.__dict__:
-                submethobj = base.__dict__[meth]
-                break
-
-        # If we found our abstract method, we didn't find anything
-        if submethobj is methobj:
-            submethobj = UNDEFINED
-
-        # Determine if we have the right method type
-        result = None
-        bad_arg_spec = 'Argument spec does not match parent for method %s'
-
-        # pylint: disable=deprecated-method
-        if isinstance(methobj, property):
-            if submethobj is UNDEFINED or not isinstance(submethobj, property):
-                result = Result(False, 'Does not contain required property (%s)' % meth, 210)
-
-        elif isinstance(methobj, staticmethod):
-            if submethobj is UNDEFINED or not isinstance(submethobj, staticmethod):
-                result = Result(False, 'Does not contain required static method (%s)' % meth, 211)
-            elif PY26:  # pragma: no cover
-                if getfullargspec(methobj.__get__(True)) != \
-                   getfullargspec(submethobj.__get__(True)):
-                    result = Result(False, bad_arg_spec % meth, 220)
-            elif not _compare_argspec(getfullargspec(methobj.__func__),
-                                      getfullargspec(submethobj.__func__)):
-                result = Result(False, bad_arg_spec % meth, 220)
-
-        elif isinstance(methobj, classmethod):
-            if submethobj is UNDEFINED or not isinstance(submethobj, classmethod):
-                result = Result(False, 'Does not contain required class method (%s)' % meth, 212)
-            elif PY26:  # pragma: no cover
-                if getfullargspec(methobj.__get__(True).__func__) != \
-                   getfullargspec(submethobj.__get__(True).__func__):
-                    result = Result(False, bad_arg_spec % meth, 220)
-            elif not _compare_argspec(getfullargspec(methobj.__func__),
-                                      getfullargspec(submethobj.__func__)):
-                result = Result(False, bad_arg_spec % meth, 220)
-
-        elif isfunction(methobj):
-            if submethobj is UNDEFINED or not isfunction(submethobj):
-                result = Result(False, 'Does not contain required method (%s)' % meth, 213)
-            elif not _compare_argspec(getfullargspec(methobj), getfullargspec(submethobj)):
-                result = Result(False, bad_arg_spec % meth, 220)
-
-        # If it's not a type we're specifically checking, just check for existence
-        elif submethobj is UNDEFINED:
-            result = Result(False, 'Does not contain required attribute (%s)' % meth, 214)
-
-        if result:
-            return result
-
-        # If abstract is a coroutine method, child should be too
-        if iscoroutinefunction(methobj) and not iscoroutinefunction(submethobj):
-            return Result(False, 'Does not contain required coroutine method (%s)' % meth, 215)
-
-        # If abstract has type annotations and the child has type annotations, they should match
-        meth_annotations = getattr(methobj, '__annotations__', {})
-        if meth_annotations:
-            submeth_annotations = getattr(submethobj, '__annotations__', {})
-            if submeth_annotations and meth_annotations != submeth_annotations:
-                return Result(False, 'Type annotations differ for (%s)' % meth, 216)
-
-    return Result(True, None, 0)
-
-
-def _inspect_class(cls, subclass):
-    """
-    Args:
-        cls(:py:class:`Plugin`): Parent class
-        subclass(:py:class:`Plugin`): Subclass to evaluate
-
-    Returns:
-        Result: Named tuple
-
-    Inspect subclass for inclusion
+    message
+        Error message
 
     Values for errorcode:
 
@@ -179,25 +73,218 @@ def _inspect_class(cls, subclass):
         * 212: Missing abstract class method
         * 213: Missing abstract method
         * 214: Missing abstract attribute
+        * 215: Missing abstract coroutine
+        * 216: Type annotations differ
         * 220: Argument spec does not match
     """
 
-    if callable(subclass._skipload_):
+    def __init__(self, cls, subclass):
 
-        result = subclass._skipload_()
+        self.message = None
+        self.errorcode = 0
+        self.cls = cls
+        self.subclass = subclass
 
-        if isinstance(result, tuple):
-            skip, msg = result
+        self._check_skipload()
+        if not self.errorcode:
+            self._check_methods()
+
+    def __bool__(self):
+        return self.errorcode == 0
+
+    # Python 2 equivalent
+    __nonzero__ = __bool__
+
+    def _check_skipload(self):
+        """
+        Determine if subclass should be skipped
+        _skipload_ is either a Boolean or callable that returns a Boolean
+        """
+
+        # pylint: disable=protected-access
+        if callable(self.subclass._skipload_):
+
+            result = self.subclass._skipload_()
+
+            if isinstance(result, tuple):
+                skip, self.message = result
+            else:
+                skip = result
+
+            if skip:
+                self.errorcode = 156
+
+        elif self.subclass._skipload_:
+            self.errorcode = 50
+            self.message = 'Skipload flag is True'
+
+    def _check_methods(self):
+        """
+        Validate abstract methods are defined in subclass
+        """
+
+        for name, method in self.cls.__abstractmethods__.items():
+
+            if self.errorcode:
+                break
+
+            # Need to get attribute from dictionary for instance tests to work
+            for base in self.subclass.__mro__:  # pragma: no branch
+                if name in base.__dict__:
+                    submethod = base.__dict__[name]
+                    break
+
+            # If we found our abstract method, we didn't find anything
+            if submethod is method:
+                submethod = UNDEFINED
+
+            if isinstance(method, property):
+                self._check_property(name, submethod)
+            elif isinstance(method, staticmethod):
+                self._check_static_method(name, method, submethod)
+            elif isinstance(method, classmethod):
+                self._check_class_method(name, method, submethod)
+            elif isfunction(method):
+                self._check_generic_method(name, method, submethod)
+
+            # If it's not a type we're specifically checking, just check for existence
+            elif submethod is UNDEFINED:
+                self.errorcode = 214
+                self.message = 'Does not contain required attribute (%s)' % name
+
+            if not self.errorcode:
+                self._check_coroutine_method(name, method, submethod)
+
+            if not self.errorcode:
+                self._check_annotations(name, method, submethod)
+
+    def _check_property(self, name, submethod):
+        """
+        Args:
+            name(str): Method name
+            method(:py:class:`function`): Abstract method object
+            submethod(:py:class:`function`): Subclass method object
+
+        Check for class properties
+        """
+
+        if submethod is UNDEFINED or not isinstance(submethod, property):
+            self.errorcode = 210
+            self.message = 'Does not contain required property (%s)' % name
+
+    def _check_static_method(self, name, method, submethod):
+        """
+        Args:
+            name(str): Method name
+            method(:py:class:`function`): Abstract method object
+            submethod(:py:class:`function`): Subclass method object
+
+        Check for static methods
+        """
+
+        if submethod is UNDEFINED or not isinstance(submethod, staticmethod):
+            self.errorcode = 211
+            self.message = 'Does not contain required static method (%s)' % name
+        elif PY26:  # pragma: no cover
+            self._compare_argspec(name, getfullargspec(method.__get__(True)),
+                                  getfullargspec(submethod.__get__(True)))
         else:
-            skip, msg = result, None
+            self._compare_argspec(name, getfullargspec(method.__func__),
+                                  getfullargspec(submethod.__func__))
 
-        if skip:
-            return Result(False, msg, 156)
+    def _check_class_method(self, name, method, submethod):
+        """
+        Args:
+            name(str): Method name
+            method(:py:class:`function`): Abstract method object
+            submethod(:py:class:`function`): Subclass method object
 
-    elif subclass._skipload_:
-        return Result(False, 'Skipload flag is True', 50)
+        Check for class methods
+        """
 
-    return _check_methods(cls, subclass)
+        if submethod is UNDEFINED or not isinstance(submethod, classmethod):
+            self.errorcode = 212
+            self.message = 'Does not contain required class method (%s)' % name
+        elif PY26:  # pragma: no cover
+            self._compare_argspec(name, getfullargspec(method.__get__(True).__func__),
+                                  getfullargspec(submethod.__get__(True).__func__))
+        else:
+            self._compare_argspec(name, getfullargspec(method.__func__),
+                                  getfullargspec(submethod.__func__))
+
+    def _check_generic_method(self, name, method, submethod):
+        """
+        Args:
+            name(str): Method name
+            method(:py:class:`function`): Abstract method object
+            submethod(:py:class:`function`): Subclass method object
+
+        Check for generic methods
+        """
+
+        if submethod is UNDEFINED or not isfunction(submethod):
+            self.errorcode = 213
+            self.message = 'Does not contain required method (%s)' % name
+        else:
+            self._compare_argspec(name, getfullargspec(method), getfullargspec(submethod))
+
+    def _check_coroutine_method(self, name, method, submethod):
+        """
+        Args:
+            name(str): Method name
+            method(:py:class:`function`): Abstract method object
+            submethod(:py:class:`function`): Subclass method object
+
+        If abstract is a coroutine method, child should be too
+        """
+
+        if iscoroutinefunction(method) and not iscoroutinefunction(submethod):
+            self.errorcode = 215
+            self.message = 'Does not contain required coroutine method (%s)' % name
+
+    def _check_annotations(self, name, method, submethod):
+        """
+        Args:
+            name(str): Method name
+            method(:py:class:`function`): Abstract method object
+            submethod(:py:class:`function`): Subclass method object
+
+        If abstract has type annotations and the child has type annotations, they should match
+        """
+
+        meth_annotations = getattr(method, '__annotations__', {})
+        if meth_annotations:
+            submeth_annotations = getattr(submethod, '__annotations__', {})
+            if submeth_annotations and meth_annotations != submeth_annotations:
+                self.errorcode = 216
+                self.message = 'Type annotations differ for (%s)' % name
+
+    def _compare_argspec(self, name, spec_1, spec_2):
+        """
+        Args:
+            name(str): Method name
+            spec_1(:py:class:`inspect.FullArgSpec`): Argument spec
+            spec_2(:py:class:`inspect.FullArgSpec`): Argument spec
+
+        Compares two argspecs skipping type annotations
+        """
+
+        spec_1_dict = spec_1._asdict()
+        spec_2_dict = spec_2._asdict()
+
+        matches = True
+
+        for key, val in spec_1_dict.items():
+            # Annotations are checked separately
+            if key == 'annotations':
+                continue
+            if spec_2_dict[key] != val:
+                matches = False
+                break
+
+        if not matches:
+            self.errorcode = 220
+            self.message = 'Argument spec does not match parent for method %s' % name
 
 
 class PluginType(type):
@@ -237,9 +324,9 @@ class PluginType(type):
                               PluginWarning, stacklevel=2)
 
             else:
-                result = _inspect_class(group[new._type_]._parent, new)
+                result = ClassInspector(group[new._type_]._parent, new)
 
-                if result.valid:
+                if result:
                     group[new._type_].setdefault(new.name, PluginDict())[version] = new
 
                 else:
@@ -260,9 +347,9 @@ class PluginType(type):
 
             # Get abstract methods by walking the MRO
             for base in reversed(new.__mro__):
-                for meth, methobj in base.__dict__.items():
-                    if getattr(methobj, '__isabstractmethod__', False):
-                        new.__abstractmethods__[meth] = methobj
+                for method_name, method in base.__dict__.items():
+                    if getattr(method, '__isabstractmethod__', False):
+                        new.__abstractmethods__[method_name] = method
 
         else:
             raise ValueError('Unknown parent type: %s' % new._type_)
@@ -431,4 +518,5 @@ def get_plugins():
     Convenience method for accessing all imported plugins
     """
 
+    # pylint: disable=protected-access
     return PluginType._PluginType__plugins

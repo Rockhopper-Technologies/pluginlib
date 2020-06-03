@@ -59,7 +59,7 @@ spelling-ignore-words=
     OrderedDict,
     Pluginlib, pluginlib, PluginlibError, PluginLoader, PluginWarning, popitem, pragma, py, pypy,
     repr,
-    setdefault, sphinxcontrib, str, Skipload, staticmethod,
+    setdefault, sphinxcontrib, str, Skipload, staticmethod, submethod,
     subclasses, Subpackage, Submodule, submodules, sys,
     TestCase, traceback, tuple, tuples,
     unittest, UserWarning,
