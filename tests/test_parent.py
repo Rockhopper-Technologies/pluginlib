@@ -20,6 +20,7 @@ from tests import OUTPUT, TestCase, unittest
 
 
 NO_ASYNC = sys.version_info[:2] < (3, 5)
+PY2 = sys.version_info[0] < 3
 
 
 # pylint: disable=protected-access, no-member
@@ -395,6 +396,8 @@ class TestPluginType(TestCase):
         self.prop(Parent, 'Does not contain required method')
         self.attr(Parent, 'Does not contain required method')
         self.coroutine(Parent)
+        self.type_hints_1(Parent)
+        self.type_hints_2(Parent)
 
     def test_abs_method_argspec(self):
         """Method argument spec must match"""
@@ -531,6 +534,28 @@ class TestPluginType(TestCase):
         self.attr(Parent, 'Does not contain required method')
         self.coroutine(Parent)
 
+    @unittest.skipIf(PY2, 'Requires Python 3+')
+    def test_type_annotations(self):
+        """If parent and child have annotations they must match"""
+
+        @parent.Parent('test_parent')
+        class Parent(object):
+            """Parent with typed method"""
+
+            class_definition = textwrap.dedent('''\
+            @abstractmethod
+            def abstract(self) -> str:
+                """Method with type annotations"""
+            ''')
+
+            local_rtn = {}
+            exec(class_definition, globals(), local_rtn)  # pylint: disable=exec-used
+            abstract = local_rtn['abstract']
+
+        self.meth(Parent)
+        self.type_hints_1(Parent)
+        self.type_hints_2(Parent, 'Type annotations differ')
+
     def check_method(self, parent_class, error, child, e):
         """Check child methods"""
 
@@ -650,6 +675,50 @@ class TestPluginType(TestCase):
             Coroutine = local_rtn['Coroutine']  # pylint: disable=invalid-name
 
         self.check_method(parent_class, error, Coroutine, e)
+
+    def type_hints_1(self, parent_class, error=None):
+        """Test abstract method has type annotations"""
+
+        if PY2:
+            return
+
+        with warnings.catch_warnings(record=True) as e:
+
+            class_definition = textwrap.dedent('''\
+            class TypeHints1(parent_class):
+                """Has type annotations"""
+
+                def abstract(self) -> str:
+                    """Method with type annotations"""
+            ''')
+
+            local_rtn = {'parent_class': parent_class}
+            exec(class_definition, globals(), local_rtn)  # pylint: disable=exec-used
+            TypeHints1 = local_rtn['TypeHints1']  # pylint: disable=invalid-name
+
+        self.check_method(parent_class, error, TypeHints1, e)
+
+    def type_hints_2(self, parent_class, error=None):
+        """Test abstract method has type annotations"""
+
+        if PY2:
+            return
+
+        with warnings.catch_warnings(record=True) as e:
+
+            class_definition = textwrap.dedent('''\
+            class TypeHints2(parent_class):
+                """Has type annotations"""
+
+                def abstract(self) -> int:
+                    """Method with type annotations"""
+            ''')
+
+            local_rtn = {'parent_class': parent_class}
+            exec(class_definition, globals(), local_rtn)  # pylint: disable=exec-used
+            TypeHints2 = local_rtn['TypeHints2']  # pylint: disable=invalid-name
+
+        self.check_method(parent_class, error, TypeHints2, e)
 
     def test_duplicate_parents(self):
         """Parents with the same plugin type should raise an error"""

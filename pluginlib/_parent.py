@@ -41,6 +41,31 @@ except NameError:
 # pylint: disable=protected-access
 
 
+def _compare_argspec(spec_1, spec_2):
+    """
+    Args:
+        cls(:py:class:`inspect.FullArgSpec`): Argument spec
+        cls(:py:class:`inspect.FullArgSpec`): Argument spec
+
+    Returns:
+        bool: True if argspecs match
+
+    Compares two argspecs skipping type annotations
+    """
+
+    spec_1_dict = spec_1._asdict()
+    spec_2_dict = spec_2._asdict()
+
+    for key, val in spec_1_dict.items():
+        # Annotations are checked separately
+        if key == 'annotations':
+            continue
+        if spec_2_dict[key] != val:
+            return False
+
+    return True
+
+
 def _check_methods(cls, subclass):  # pylint: disable=too-many-branches
     """
     Args:
@@ -82,7 +107,8 @@ def _check_methods(cls, subclass):  # pylint: disable=too-many-branches
                 if getfullargspec(methobj.__get__(True)) != \
                    getfullargspec(submethobj.__get__(True)):
                     result = Result(False, bad_arg_spec % meth, 220)
-            elif getfullargspec(methobj.__func__) != getfullargspec(submethobj.__func__):
+            elif not _compare_argspec(getfullargspec(methobj.__func__),
+                                      getfullargspec(submethobj.__func__)):
                 result = Result(False, bad_arg_spec % meth, 220)
 
         elif isinstance(methobj, classmethod):
@@ -92,13 +118,14 @@ def _check_methods(cls, subclass):  # pylint: disable=too-many-branches
                 if getfullargspec(methobj.__get__(True).__func__) != \
                    getfullargspec(submethobj.__get__(True).__func__):
                     result = Result(False, bad_arg_spec % meth, 220)
-            elif getfullargspec(methobj.__func__) != getfullargspec(submethobj.__func__):
+            elif not _compare_argspec(getfullargspec(methobj.__func__),
+                                      getfullargspec(submethobj.__func__)):
                 result = Result(False, bad_arg_spec % meth, 220)
 
         elif isfunction(methobj):
             if submethobj is UNDEFINED or not isfunction(submethobj):
                 result = Result(False, 'Does not contain required method (%s)' % meth, 213)
-            elif getfullargspec(methobj) != getfullargspec(submethobj):
+            elif not _compare_argspec(getfullargspec(methobj), getfullargspec(submethobj)):
                 result = Result(False, bad_arg_spec % meth, 220)
 
         # If it's not a type we're specifically checking, just check for existence
@@ -111,6 +138,13 @@ def _check_methods(cls, subclass):  # pylint: disable=too-many-branches
         # If abstract is a coroutine method, child should be too
         if iscoroutinefunction(methobj) and not iscoroutinefunction(submethobj):
             return Result(False, 'Does not contain required coroutine method (%s)' % meth, 215)
+
+        # If abstract has type annotations and the child has type annotations, they should match
+        meth_annotations = getattr(methobj, '__annotations__', {})
+        if meth_annotations:
+            submeth_annotations = getattr(submethobj, '__annotations__', {})
+            if submeth_annotations and meth_annotations != submeth_annotations:
+                return Result(False, 'Type annotations differ for (%s)' % meth, 216)
 
     return Result(True, None, 0)
 

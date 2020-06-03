@@ -44,12 +44,12 @@ spelling-dict=en_US
 # List of comma separated words that should not be checked.
 spelling-ignore-words=
     abstractattribute, abstractmethod, abstractclassmethod, abstractstaticmethod,
-    assertRaisesRegexp, assertNotRegexpMatches, assertRegexpMatches,
+    argspecs, assertRaisesRegexp, assertNotRegexpMatches, assertRegexpMatches,
     attr, autoattribute, Args, Avram, Lubkin,
     basename, BlacklistEntry, bool, Boolean,
     classmethod, cls, coroutine,
     EntryPointWarning, errorcode, exc,
-    func,
+    FullArgSpec, func,
     getset,
     importlib, ImportWarning, init, Iterable, iterable, iterables,
     json, JSON,
