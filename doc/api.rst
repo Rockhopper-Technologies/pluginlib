@@ -19,6 +19,7 @@ Classes
 
 .. autoclass:: Plugin
     :members:
+    :exclude-members: plugin_group, plugin_type
 
 .. autoclass:: PluginLoader
     :members:

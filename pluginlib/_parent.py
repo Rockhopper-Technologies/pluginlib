@@ -258,16 +258,21 @@ class Plugin(object):
 
     **Class Properties**
 
+        .. autoattribute:: name
+            :annotation:
+
+            :py:class:`str` -- :attr:`_alias_` if set or falls back to class name
+
+        .. autoattribute:: plugin_group
+
+        .. autoattribute:: plugin_type
+
         .. autoattribute:: version
             :annotation:
 
             :py:class:`str` -- Returns :attr:`_version_` if set,
             otherwise falls back to module ``__version__`` or :py:data:`None`
 
-        .. autoattribute:: name
-            :annotation:
-
-            :py:class:`str` -- :attr:`_alias_` if set or falls back to class name
     """
 
     __slots__ = ()
@@ -304,7 +309,7 @@ class Plugin(object):
     @ClassProperty
     def plugin_type(cls):  # noqa: N805  # pylint: disable=no-self-argument
         """
-        :py:class:`str` -- `plugin_type` of parent class
+        :py:class:`str` -- ``plugin_type`` of :py:class:`~pluginlib.Parent` class
         """
 
         return cls._type_  # pylint: disable=no-member
@@ -312,7 +317,7 @@ class Plugin(object):
     @ClassProperty
     def plugin_group(cls):  # noqa: N805  # pylint: disable=no-self-argument
         """
-        :py:class:`str` -- `group` of parent class
+        :py:class:`str` -- ``group`` of :py:class:`~pluginlib.Parent` class
         """
 
         return cls._group_  # pylint: disable=no-member
