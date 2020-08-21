@@ -107,13 +107,19 @@ class GroupDict(DictWithDotNotation):
         Alternative generator for items() method
         """
 
-        if name:
-            if type_filter and self._key_attr == 'type':
-                if name in type_filter and name in self:
-                    yield name, self[name]
-            elif name in self:
-                yield name, self[name]
-
+        if (
+            name
+            and type_filter
+            and self._key_attr == 'type'
+            and name in type_filter
+            and name in self
+            or name
+            and (not type_filter or self._key_attr != 'type')
+            and name in self
+        ):
+            yield name, self[name]
+        elif name:
+            pass
         elif type_filter and self._key_attr == 'type':
             for key, val in self.items():
                 if key in type_filter:

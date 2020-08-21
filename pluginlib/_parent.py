@@ -343,7 +343,7 @@ class PluginType(type):
         elif new._parent_:
             group[new._type_] = TypeDict(new)
 
-            new.__abstractmethods__ = dict()
+            new.__abstractmethods__ = {}
 
             # Get abstract methods by walking the MRO
             for base in reversed(new.__mro__):
