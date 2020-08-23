@@ -123,10 +123,7 @@ def _import_module(name, path=None):
 
     LOGGER.debug('Attempting to load module %s from %s', name, path)
     try:
-        if epoint:
-            mod = epoint.load()
-        else:
-            mod = importlib.import_module(name)
+        mod = epoint.load() if epoint else importlib.import_module(name)
 
     except Exception as e:  # pylint: disable=broad-except
         _raise_friendly_exception(e, name, path)
