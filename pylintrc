@@ -35,7 +35,8 @@ max-attributes=8
 [MESSAGES CONTROL]
 disable=
     locally-disabled,
-    useless-object-inheritance
+    super-with-arguments,  # Python 2
+    useless-object-inheritance,
 
 [SPELLING]
 # Spelling dictionary name.

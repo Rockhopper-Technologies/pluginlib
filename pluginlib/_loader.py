@@ -280,6 +280,7 @@ class PluginLoader(object):
                     try:
                         entry = BlacklistEntry(*entry)
                     except (AttributeError, TypeError) as e:
+                        # pylint: disable=raise-missing-from
                         raise AttributeError("Invalid blacklist entry '%s': %s " % (entry, e))
                 else:
                     raise AttributeError("Invalid blacklist entry '%s': Not an iterable" % entry)
