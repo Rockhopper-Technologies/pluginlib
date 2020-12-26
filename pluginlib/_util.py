@@ -19,7 +19,7 @@ import sys
 
 
 PY26 = sys.version_info[:2] < (2, 7)
-PY33 = sys.version_info[:2] < (3, 4)
+PY34 = sys.version_info[:2] < (3, 5)
 
 
 # Setup logger
