@@ -382,7 +382,7 @@ class TestPluginLoader(TestCase):
         with self.assertRaisesRegex(PluginImportError, error) as e:
             ploader.plugins  # pylint: disable=pointless-statement
 
-        self.assertRegex(e.exception.friendly, 'SyntaxError: invalid syntax')
+        self.assertRegex(e.exception.friendly, "SyntaxError: (?:invalid syntax|expected ':')")
         self.assertRegex(e.exception.friendly, 'tests.testdata.bad.syntax')
         self.assertRegex(e.exception.friendly, 'line 12')
 
@@ -407,7 +407,7 @@ class TestPluginLoader(TestCase):
         with self.assertRaisesRegex(PluginImportError, error) as e:
             ploader.plugins  # pylint: disable=pointless-statement
 
-        self.assertRegex(e.exception.friendly, 'SyntaxError: invalid syntax')
+        self.assertRegex(e.exception.friendly, "SyntaxError: (?:invalid syntax|expected ':')")
         self.assertRegex(e.exception.friendly, 'testdata/bad/syntax.py')
         self.assertRegex(e.exception.friendly, 'line 12')
 
