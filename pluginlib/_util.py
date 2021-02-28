@@ -200,6 +200,7 @@ class DictWithDotNotation(dict):
     Dictionary addressable by dot notation
     """
 
+    # pylint: disable=inconsistent-return-statements  # PY2 compatibility
     def __getattr__(self, name):
         try:
             return self[name]
