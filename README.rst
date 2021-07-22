@@ -7,8 +7,8 @@
 .. |docs| image:: https://img.shields.io/readthedocs/pluginlib.svg?style=plastic&logo=read-the-docs
     :target: https://pluginlib.readthedocs.org
     :alt: Documentation Status
-.. |travis| image:: https://img.shields.io/travis/Rockhopper-Technologies/pluginlib.svg?style=plastic&logo=travis
-    :target: https://travis-ci.org/Rockhopper-Technologies/pluginlib
+.. |travis| image:: https://img.shields.io/travis/com/Rockhopper-Technologies/pluginlib.svg?style=plastic&logo=travis
+    :target: https://travis-ci.com/Rockhopper-Technologies/pluginlib
     :alt: Travis-CI Build Status
 .. |codecov| image:: https://img.shields.io/codecov/c/github/Rockhopper-Technologies/pluginlib.svg?style=plastic&logo=codecov
     :target: https://codecov.io/gh/Rockhopper-Technologies/pluginlib
