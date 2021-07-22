@@ -29,7 +29,7 @@ try:
     from collections.abc import Iterable
 except ImportError:   # pragma: no cover
     # For Python < 3.3
-    from collections import Iterable
+    from collections import Iterable  # pylint: disable=deprecated-class
 
 
 def format_exception(etype, value, tback, limit=None):

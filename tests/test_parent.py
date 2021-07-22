@@ -499,7 +499,7 @@ class TestPluginType(TestCase):
         class Parent(object):
             """Parent with abstract property"""
 
-            @abstractproperty
+            @abstractproperty  # Python 2  # pylint: disable=deprecated-decorator
             def abstract(self):
                 """Abstract property"""
 
