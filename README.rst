@@ -76,7 +76,7 @@ EL6 and EL7 (RHEL/CentOS/Scientific)
 .. code-block:: console
 
     $ yum install python-pluginlib
-    $ yum install python34-pluginlib
+    $ yum install python36-pluginlib
 
 Fedora
 ------
