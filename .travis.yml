@@ -42,14 +42,6 @@ matrix:
     - python: 2.7
       env: TOXENV=el7
 
-    - python: 2.6
-      env: TOXENV=py26
-      dist: trusty
-
-    - python: 2.6
-      env: TOXENV=el6
-      dist: trusty
-
     - python: pypy
       env: TOXENV=pypy
 
@@ -57,7 +49,6 @@ matrix:
       env: TOXENV=pypy3
 
   allow_failures:
-    - python: 2.6
     - python: 3.10-dev
 
 install:

@@ -10,15 +10,10 @@
 This module contains pluginlib object classes
 """
 
+from collections import OrderedDict
 from pkg_resources import parse_version
 
-from pluginlib._util import BASESTRING, CachingDict, DictWithDotNotation, OPERATORS, PY26
-
-
-if PY26:
-    from ordereddict import OrderedDict  # pylint: disable=import-error  # pragma: no cover
-else:
-    from collections import OrderedDict
+from pluginlib._util import BASESTRING, CachingDict, DictWithDotNotation, OPERATORS
 
 
 class BlacklistEntry(object):

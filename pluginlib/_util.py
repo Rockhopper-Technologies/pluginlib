@@ -18,23 +18,12 @@ import operator as _operator
 import sys
 
 
-PY26 = sys.version_info[:2] < (2, 7)
 PY34 = sys.version_info[:2] < (3, 5)
 
 
 # Setup logger
-if PY26:  # pragma: no branch
-
-    class NullHandler(logging.Handler):  # pragma: no cover
-        """NullHandler for Python 2.6"""
-        def emit(self, record):
-            pass
-else:
-    NullHandler = logging.NullHandler
-
-
 LOGGER = logging.getLogger('pluginlib')
-LOGGER.addHandler(NullHandler())
+LOGGER.addHandler(logging.NullHandler())
 
 OPERATORS = {'=': _operator.eq,
              '==': _operator.eq,

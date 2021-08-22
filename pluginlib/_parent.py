@@ -17,7 +17,7 @@ import warnings
 from pluginlib.exceptions import PluginWarning
 from pluginlib._objects import GroupDict, TypeDict, PluginDict
 from pluginlib._util import (allow_bare_decorator, ClassProperty, DictWithDotNotation,
-                             LOGGER, PY26, Undefined)
+                             LOGGER, Undefined)
 
 try:
     from asyncio import iscoroutinefunction
@@ -185,9 +185,6 @@ class ClassInspector(object):
         if submethod is UNDEFINED or not isinstance(submethod, staticmethod):
             self.errorcode = 211
             self.message = 'Does not contain required static method (%s)' % name
-        elif PY26:  # pragma: no cover
-            self._compare_argspec(name, getfullargspec(method.__get__(True)),
-                                  getfullargspec(submethod.__get__(True)))
         else:
             self._compare_argspec(name, getfullargspec(method.__func__),
                                   getfullargspec(submethod.__func__))
@@ -205,9 +202,6 @@ class ClassInspector(object):
         if submethod is UNDEFINED or not isinstance(submethod, classmethod):
             self.errorcode = 212
             self.message = 'Does not contain required class method (%s)' % name
-        elif PY26:  # pragma: no cover
-            self._compare_argspec(name, getfullargspec(method.__get__(True).__func__),
-                                  getfullargspec(submethod.__get__(True).__func__))
         else:
             self._compare_argspec(name, getfullargspec(method.__func__),
                                   getfullargspec(submethod.__func__))
