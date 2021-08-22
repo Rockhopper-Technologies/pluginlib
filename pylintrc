@@ -37,6 +37,7 @@ disable=
     locally-disabled,
     super-with-arguments,  # Python 2
     useless-object-inheritance,
+    redundant-u-string-prefix,  # Python 2
 
 [SPELLING]
 # Spelling dictionary name.
