@@ -34,10 +34,12 @@ max-attributes=8
 
 [MESSAGES CONTROL]
 disable=
+    consider-using-f-string,  # Python 2
     locally-disabled,
+    redundant-u-string-prefix,  # Python 2
     super-with-arguments,  # Python 2
     useless-object-inheritance,
-    redundant-u-string-prefix,  # Python 2
+
 
 [SPELLING]
 # Spelling dictionary name.
