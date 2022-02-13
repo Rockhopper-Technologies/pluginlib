@@ -29,8 +29,8 @@ DEFAULT = '_default'
 UNDEFINED = Undefined()
 
 isfunction = inspect.isfunction  # pylint: disable=invalid-name
-getfullargspec = getattr(inspect,  # pylint: disable=invalid-name
-                         'getfullargspec', getattr(inspect, 'getargspec'))
+# Support for deprecated method in 2.7
+getfullargspec = getattr(inspect, 'getfullargspec', getattr(inspect, 'getargspec', None))
 
 try:
     STR = unicode
