@@ -74,23 +74,24 @@ PIP
 
     $ pip install pluginlib
 
-EL6 and EL7 (RHEL/CentOS/Scientific)
-------------------------------------
+Fedora and EL (RHEL/CentOS/Rocky/Alma)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+(EPEL_ repositories must be configured_ for EL8)
+
+.. code-block:: console
+
+    $ dnf install python3-pluginlib
+
+EL7 (RHEL/CentOS)
+^^^^^^^^^^^^^^^^^
 
 (EPEL_ repositories must be configured_)
 
 .. code-block:: console
 
-    $ yum install python-pluginlib
+    $ yum install python2-pluginlib
     $ yum install python36-pluginlib
-
-Fedora
-------
-
-.. code-block:: console
-
-    $ dnf install python2-pluginlib
-    $ dnf install python3-pluginlib
 
 Usage
 =====
@@ -213,4 +214,4 @@ see the `Accessing Plugins`_ section.
 .. _Plugin Groups: http://pluginlib.readthedocs.io/en/stable/concepts.html#plugin-groups
 
 .. _EPEL: https://fedoraproject.org/wiki/EPEL
-.. _configured: https://fedoraproject.org/wiki/EPEL#How_can_I_use_these_extra_packages.3F
+.. _configured: https://docs.fedoraproject.org/en-US/epel/#how_can_i_use_these_extra_packages
