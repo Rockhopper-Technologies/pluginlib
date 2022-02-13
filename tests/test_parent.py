@@ -15,12 +15,12 @@ import warnings
 from pluginlib import (abstractmethod, abstractproperty, abstractstaticmethod,
                        abstractclassmethod, abstractattribute)
 import pluginlib._parent as parent
+from pluginlib._util import PY2
 
 from tests import OUTPUT, TestCase, unittest
 
 
 NO_ASYNC = sys.version_info[:2] < (3, 5)
-PY2 = sys.version_info[0] < 3
 
 
 # pylint: disable=protected-access, no-member

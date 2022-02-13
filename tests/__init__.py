@@ -12,14 +12,14 @@ import logging
 import sys
 import unittest
 
-from pluginlib._util import LOGGER
+from pluginlib._util import LOGGER, PY2
 
 if sys.version_info[:2] < (3, 3):
     import mock  # pylint: disable=import-error
 else:
     from unittest import mock  # noqa: F401  # pylint: disable=no-name-in-module, import-error
 
-if sys.version_info[0] < 3:
+if PY2:
     from StringIO import StringIO  # pylint: disable=import-error
 else:
     from io import StringIO

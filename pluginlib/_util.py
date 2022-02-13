@@ -18,6 +18,7 @@ import operator as _operator
 import sys
 
 
+PY2 = sys.version_info[0] == 2
 PY34 = sys.version_info[:2] < (3, 5)
 
 
@@ -36,7 +37,7 @@ OPERATORS = {'=': _operator.eq,
 
 NoneType = type(None)
 
-if sys.version_info[0] < 3:  # pragma: no branch
+if PY2:  # pragma: no branch
     BASESTRING = basestring  # pragma: no cover  # noqa: F821 # pylint: disable=undefined-variable
 else:
     BASESTRING = str
@@ -51,7 +52,7 @@ def raise_with_traceback(exc, tback):  # pragma: no cover
 
 # Attempt to make a Python 2/3 compatible way to raise with a traceback
 # pylint: disable=exec-used
-if sys.version_info[0] < 3:  # pragma: no branch
+if PY2:  # pragma: no branch
     exec("""def raise_with_traceback(exc, tback):  # pragma: no cover
     raise exc.__class__, exc, tback
 """)
@@ -68,7 +69,7 @@ def raise_from_none(exc):  # pragma: no cover
     raise exc
 
 
-if sys.version_info[0] >= 3:  # pragma: no branch
+if not PY2:  # pragma: no branch
     exec('def raise_from_none(exc):\n    raise exc from None')  # pylint: disable=exec-used
 
 
