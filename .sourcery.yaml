@@ -1,0 +1,7 @@
+refactor:
+  skip:
+    - use-named-expression  # Python 3.8+
+    - yield-from  # Python 3.3+
+
+clone_detection:
+  min_lines: 4
