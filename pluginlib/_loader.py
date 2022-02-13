@@ -23,7 +23,7 @@ from pkg_resources import iter_entry_points, EntryPoint
 from pluginlib.exceptions import PluginImportError, EntryPointWarning
 from pluginlib._objects import BlacklistEntry
 from pluginlib._parent import get_plugins
-from pluginlib._util import BASESTRING, LOGGER, NoneType, PY34, raise_with_traceback
+from pluginlib._util import BASESTRING, LOGGER, NoneType, PY2, PY34, raise_with_traceback
 
 try:
     from collections.abc import Iterable
@@ -172,7 +172,7 @@ def _recursive_path_import(path, prefix_package):
     for root, dirs, files in os.walk(path):
         # If root is a Python module, we won't walk any farther down it
         # find_module() seems to be recursive in Python 3
-        if '__init__.py' in files and (3, 0) <= sys.version_info[:2] < (3, 5):  # pragma: no cover
+        if '__init__.py' in files and not PY2:  # pragma: no cover
             dirs.clear()
             if root != path:
                 continue
