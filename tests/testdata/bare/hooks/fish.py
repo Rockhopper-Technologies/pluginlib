@@ -12,6 +12,8 @@ Test data standard library
 from __future__ import absolute_import
 from tests.testdata.parents import Hook
 
+__version__ = '1.2.3'
+
 
 class Fish(Hook):
     """Dummy fish hook"""

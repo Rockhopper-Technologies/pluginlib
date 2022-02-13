@@ -303,6 +303,7 @@ class TestPluginLoader(TestCase):
 
         self.assertEqual(len(plugins.hook), 2)
         self.assertTrue('fish' in plugins.hook)
+        self.assertEqual(plugins.hook.fish.version, '1.2.3')
         self.assertTrue('grappling' in plugins.hook)
 
         self.assertEqual(len(plugins.engine), 1)

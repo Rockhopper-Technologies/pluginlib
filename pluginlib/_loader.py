@@ -195,6 +195,7 @@ def _recursive_path_import(path, prefix_package):
                 else:
                     spec = finder.find_spec(name)
                     module = importlib.util.module_from_spec(spec)
+                    sys.modules[name] = module
                     spec.loader.exec_module(module)
 
             except Exception as e:  # pylint: disable=broad-except
