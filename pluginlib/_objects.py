@@ -70,7 +70,7 @@ class BlacklistEntry(object):
             self.operator = operator
 
         if self.version is not None and not isinstance(self.version, BASESTRING):
-            raise TypeError('version must be a string, recieved %s' % type(self.version).__name__)
+            raise TypeError('version must be a string, received %s' % type(self.version).__name__)
 
         if self.operator is None:
             self.operator = '=='

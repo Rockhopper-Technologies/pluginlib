@@ -299,7 +299,7 @@ class PluginType(type):
         new = super(PluginType, cls).__new__(cls, name, bases, namespace, **kwargs)
 
         # Determine group
-        group = cls.__plugins.setdefault(new._group_ if new._group_ else DEFAULT, GroupDict())
+        group = cls.__plugins.setdefault(new._group_ or DEFAULT, GroupDict())
 
         if new._type_ in group:
             if new._parent_:
@@ -355,7 +355,7 @@ class PluginType(type):
         Return registered plugins
         """
 
-        return cls.__plugins[cls._group_ if cls._group_ else DEFAULT][cls._type_]
+        return cls.__plugins[cls._group_ or DEFAULT][cls._type_]
 
 
 class Plugin(object):
@@ -470,11 +470,7 @@ class Parent(object):
         # In case we're inheriting another parent, clean registry
         if isinstance(cls, PluginType):
             plugins = cls._get_plugins().get(cls.name, {})
-            remove = []
-
-            for pver, pcls in plugins.items():
-                if cls is pcls:
-                    remove.append(pver)
+            remove = [pver for pver, pcls in plugins.items() if cls is pcls]
 
             if plugins and len(remove) == len(plugins):
                 del cls._get_plugins()[cls.name]

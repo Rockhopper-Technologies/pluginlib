@@ -258,13 +258,13 @@ class PluginLoader(object):
         for argname, arg in (('modules', modules), ('paths', paths), ('blacklist', blacklist),
                              ('type_filter', type_filter)):
             if not isinstance(arg, (NoneType, Iterable)) or isinstance(arg, BASESTRING):
-                raise TypeError("Expecting iterable for '%s', recieved %s" % (argname, type(arg)))
+                raise TypeError("Expecting iterable for '%s', received %s" % (argname, type(arg)))
 
         # Make sure we got strings
         for argname, arg in (('library', library), ('entry_point', entry_point),
                              ('prefix_package', prefix_package)):
             if not isinstance(arg, (NoneType, BASESTRING)):
-                raise TypeError("Expecting string for '%s', recieved %s" % (argname, type(arg)))
+                raise TypeError("Expecting string for '%s', received %s" % (argname, type(arg)))
 
         self.group = group or '_default'
         self.library = library
