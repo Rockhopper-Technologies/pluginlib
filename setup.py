@@ -22,13 +22,6 @@ if sys.version_info[:2] < (3, 3):
     # Include unittest.mock from 3.3+
     TESTS_REQUIRE.append('mock')
 
-if sys.version_info[:2] < (2, 7):
-
-    # Include OrderedDict from 2.7+
-    INSTALL_REQUIRE.append('ordereddict')
-    # Include unittest features from 2.7+
-    TESTS_REQUIRE.append('unittest2')
-
 setup(
     name='pluginlib',
     version=get_version(os.path.join('pluginlib', '__init__.py')),

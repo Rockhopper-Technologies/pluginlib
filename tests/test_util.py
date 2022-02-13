@@ -210,10 +210,7 @@ class TestClassAbstractStaticMethod(TestCase):
         meth = util.abstractstaticmethod(func)
         self.assertIsInstance(meth, staticmethod)
         self.assertTrue(getattr(meth, '__isabstractmethod__', False))
-        if sys.version_info[:2] >= (2, 7):
-            self.assertTrue(getattr(meth.__func__, '__isabstractmethod__', False))
-        else:
-            self.assertTrue(getattr(meth.__get__(True), '__isabstractmethod__', False))
+        self.assertTrue(getattr(meth.__func__, '__isabstractmethod__', False))
 
 
 class TestClassAbstractClassMethod(TestCase):
@@ -229,7 +226,4 @@ class TestClassAbstractClassMethod(TestCase):
         meth = util.abstractclassmethod(func)
         self.assertIsInstance(meth, classmethod)
         self.assertTrue(getattr(meth, '__isabstractmethod__', False))
-        if sys.version_info[:2] >= (2, 7):
-            self.assertTrue(getattr(meth.__func__, '__isabstractmethod__', False))
-        else:
-            self.assertTrue(getattr(meth.__get__(True).__func__, '__isabstractmethod__', False))
+        self.assertTrue(getattr(meth.__func__, '__isabstractmethod__', False))

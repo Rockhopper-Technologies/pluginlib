@@ -10,13 +10,9 @@
 
 import logging
 import sys
+import unittest
 
 from pluginlib._util import LOGGER
-
-if sys.version_info[:2] < (2, 7):
-    import unittest2 as unittest  # pylint: disable=import-error
-else:
-    import unittest  # pylint: disable=wrong-import-order
 
 if sys.version_info[:2] < (3, 3):
     import mock  # pylint: disable=import-error
