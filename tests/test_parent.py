@@ -105,7 +105,7 @@ class TestParent(TestCase):
         class Parent(object):
             """Parent"""
 
-            def hello(self):  # pylint: disable=no-self-use
+            def hello(self):
                 """Hello, world!"""
                 return 'world'
 
@@ -182,7 +182,7 @@ class TestPlugin(TestCase):
         class Parent(object):
             """Parent"""
 
-            def hello(self):  # pylint: disable=no-self-use
+            def hello(self):
                 """Hello, world!"""
                 return 'world'
 

@@ -22,6 +22,7 @@ from pluginlib._util import (allow_bare_decorator, ClassProperty, DictWithDotNot
 try:
     from asyncio import iscoroutinefunction
 except ImportError:  # pragma: no cover
+    # pylint: disable=unnecessary-lambda-assignment
     iscoroutinefunction = lambda func: False  # noqa: E731
 
 

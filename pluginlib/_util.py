@@ -163,7 +163,7 @@ class CachingDict(dict):
         try:
             return self[key]
         except KeyError:
-            self.__setitem__(key, default)
+            self[key] = default
             return default
 
     def pop(self, *args):
