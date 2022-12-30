@@ -8,7 +8,7 @@
     :target: https://pluginlib.readthedocs.org
     :alt: Documentation Status
 
-.. |gh_actions| image:: https://img.shields.io/github/workflow/status/Rockhopper-Technologies/pluginlib/Tests?event=push&logo=github-actions&style=plastic
+.. |gh_actions| image:: https://img.shields.io/github/actions/workflow/status/Rockhopper-Technologies/pluginlib/tests.yml?event=push&logo=github-actions&style=plastic
     :target: https://github.com/Rockhopper-Technologies/pluginlib/actions/workflows/tests.yml
     :alt: GitHub Actions Status
 
