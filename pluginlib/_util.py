@@ -171,18 +171,18 @@ class CachingDict(dict):
             value = super(CachingDict, self).pop(*args)
         except KeyError as e:
             raise e
-        else:
-            self._cache.clear()
-            return value
+
+        self._cache.clear()
+        return value
 
     def popitem(self):
         try:
             item = super(CachingDict, self).popitem()
         except KeyError as e:
             raise e
-        else:
-            self._cache.clear()
-            return item
+
+        self._cache.clear()
+        return item
 
 
 class DictWithDotNotation(dict):

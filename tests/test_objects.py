@@ -238,7 +238,7 @@ class TestTypeDict(TestCase):
 
     def test_type_filter(self):
         """type_filter ignored in type dict"""
-        self.assertEqual(self.tdict._filter(type_filter=('engine')), self.expected)
+        self.assertEqual(self.tdict._filter(type_filter=('engine',)), self.expected)
 
     def test_name(self):
         """Get a specific name"""
