@@ -19,7 +19,6 @@ import sys
 
 
 PY2 = sys.version_info[0] == 2
-PY34 = sys.version_info[:2] < (3, 5)
 
 
 # Setup logger

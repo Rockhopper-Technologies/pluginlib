@@ -23,7 +23,7 @@ from pkg_resources import iter_entry_points, EntryPoint
 from pluginlib.exceptions import PluginImportError, EntryPointWarning
 from pluginlib._objects import BlacklistEntry
 from pluginlib._parent import get_plugins
-from pluginlib._util import BASESTRING, LOGGER, NoneType, PY2, PY34, raise_with_traceback
+from pluginlib._util import BASESTRING, LOGGER, NoneType, PY2, raise_with_traceback
 
 try:
     from collections.abc import Iterable
@@ -189,8 +189,8 @@ def _recursive_path_import(path, prefix_package):
         for finder, name, is_pkg in pkgutil.walk_packages([root], prefix=prefix):
             LOGGER.debug('Attempting to load module %s from %s', name, finder.path)
             try:
-                # find_module() was deprecated in 3.4, but module_from_spec wasn't available
-                if PY34:  # pragma: no cover
+                # find_module() was deprecated in 3.4
+                if PY2:  # pragma: no cover
                     finder.find_module(name).load_module(name)
                 else:
                     spec = finder.find_spec(name)

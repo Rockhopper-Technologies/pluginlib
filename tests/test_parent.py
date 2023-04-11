@@ -20,9 +20,6 @@ from pluginlib._util import PY2
 from tests import OUTPUT, TestCase, unittest
 
 
-NO_ASYNC = sys.version_info[:2] < (3, 5)
-
-
 # pylint: disable=protected-access, no-member
 
 
@@ -526,7 +523,7 @@ class TestPluginType(TestCase):
         self.prop(Parent)
         self.attr(Parent)
 
-    @unittest.skipIf(NO_ASYNC, 'Requires Python 3.5+')
+    @unittest.skipIf(PY2, 'Requires Python 3.5+')
     def test_abstract_coroutine(self):
         """Attribute required in subclass"""
 
@@ -692,7 +689,7 @@ class TestPluginType(TestCase):
     def coroutine(self, parent_class, error=None):
         """Test abstract coroutine method"""
 
-        if NO_ASYNC:
+        if PY2:
             return
 
         with warnings.catch_warnings(record=True) as e:
