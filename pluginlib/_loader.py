@@ -1,4 +1,4 @@
-# Copyright 2014 - 2020 Avram Lubkin, All Rights Reserved
+# Copyright 2014 - 2023 Avram Lubkin, All Rights Reserved
 
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -114,7 +114,10 @@ def _import_module(name, path=None):
 
     if path is None:
         try:
-            loader = pkgutil.get_loader(name)
+            if PY2:
+                loader = pkgutil.get_loader(name)  # pragma: no cover
+            else:
+                loader = getattr(importlib.util.find_spec(name), 'loader', None)
         except ImportError:
             pass
         else:
