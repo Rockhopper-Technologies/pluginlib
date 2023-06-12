@@ -1,5 +1,6 @@
 refactor:
   skip:
+    - replace-interpolation-with-fstring  # Python 3.6+
     - use-named-expression  # Python 3.8+
     - yield-from  # Python 3.3+
 
