@@ -115,6 +115,7 @@ def _import_module(name, path=None):
     if path is None:
         try:
             if PY2:
+                # pylint: disable-next=deprecated-method
                 loader = pkgutil.get_loader(name)  # pragma: no cover
             else:
                 loader = getattr(importlib.util.find_spec(name), 'loader', None)
