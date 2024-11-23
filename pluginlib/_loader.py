@@ -1,4 +1,4 @@
-# Copyright 2014 - 2023 Avram Lubkin, All Rights Reserved
+# Copyright 2014 - 2024 Avram Lubkin, All Rights Reserved
 
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -256,6 +256,7 @@ class PluginLoader(object):
     .. _Entry point: https://packaging.python.org/specifications/entry-points/
     """
 
+    # pylint: disable-next=too-many-positional-arguments
     def __init__(self, group=None, library=None, modules=None, paths=None, entry_point=None,
                  blacklist=None, prefix_package='pluginlib.importer', type_filter=None):
 
