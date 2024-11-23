@@ -49,7 +49,7 @@ spelling-dict=en_US
 spelling-ignore-words=
     abstractattribute, abstractmethod, abstractclassmethod, abstractstaticmethod,
     argspecs, assertRaisesRegexp, assertNotRegexpMatches, assertRegexpMatches,
-    attr, autoattribute, Args, Avram, Lubkin,
+    asyncio, attr, autoattribute, Args, Avram, Lubkin,
     basename, BlacklistEntry, bool, Boolean,
     classmethod, cls, coroutine,
     EntryPointWarning, errorcode, exc,

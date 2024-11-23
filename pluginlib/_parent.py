@@ -1,4 +1,4 @@
-# Copyright 2014 - 2022 Avram Lubkin, All Rights Reserved
+# Copyright 2014 - 2024 Avram Lubkin, All Rights Reserved
 
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -19,17 +19,15 @@ from pluginlib._objects import GroupDict, TypeDict, PluginDict
 from pluginlib._util import (allow_bare_decorator, ClassProperty, DictWithDotNotation,
                              LOGGER, Undefined)
 
-try:
-    from asyncio import iscoroutinefunction
-except ImportError:  # pragma: no cover
-    # pylint: disable=unnecessary-lambda-assignment
-    iscoroutinefunction = lambda func: False  # noqa: E731
-
 
 DEFAULT = '_default'
 UNDEFINED = Undefined()
 
 isfunction = inspect.isfunction  # pylint: disable=invalid-name
+
+# Asyncio is not available in 2.7
+iscoroutinefunction = getattr(inspect, 'iscoroutinefunction', lambda func: False)
+
 # Support for deprecated method in 2.7
 getfullargspec = getattr(inspect, 'getfullargspec', getattr(inspect, 'getargspec', None))
 
