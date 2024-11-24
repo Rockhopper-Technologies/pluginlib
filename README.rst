@@ -30,15 +30,13 @@
     :alt: Supported implementations
     :target: https://pypi.python.org/pypi/pluginlib
 
-.. |fedora| image:: https://img.shields.io/badge/dynamic/json.svg?uri=https://pdc.fedoraproject.org/rest_api/v1/component-branches/?global_component=python-pluginlib;fields=name;active=true;type=rpm&query=$.results[?(@.name.startsWith(%22f%22))].name&label=Fedora&colorB=lightgray&style=plastic&logo=fedora
+.. |fedora| image:: https://img.shields.io/fedora/v/python3-pluginlib?style=plastic&logo=fedora&label=Fedora&color=lightgray
     :alt: Fedora version support
     :target: https://bodhi.fedoraproject.org/updates/?packages=python-pluginlib
 
-.. |EPEL| image:: https://img.shields.io/badge/dynamic/json.svg?uri=https://pdc.fedoraproject.org/rest_api/v1/component-branches/?global_component=python-pluginlib;fields=name;active=true;type=rpm&query=$.results[?(@.name.startsWith(%22e%22))].name&label=EPEL&colorB=lightgray&style=plastic&logo=epel
+.. |EPEL| image:: https://img.shields.io/fedora/v/python3-pluginlib/epel9?style=plastic&logo=epel&label=EPEL&color=lightgray
     :alt: EPEL version support
     :target: https://bodhi.fedoraproject.org/updates/?packages=python-pluginlib
-
-
 
 .. end-badges
 
