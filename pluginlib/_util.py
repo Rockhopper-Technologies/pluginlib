@@ -1,4 +1,4 @@
-# Copyright 2014 - 2023 Avram Lubkin, All Rights Reserved
+# Copyright 2014 - 2025 Avram Lubkin, All Rights Reserved
 
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -19,7 +19,7 @@ import sys
 
 
 PY2 = sys.version_info[0] == 2
-
+PY_LT_3_3 = sys.version_info[:2] < (3, 3)
 
 # Setup logger
 LOGGER = logging.getLogger('pluginlib')

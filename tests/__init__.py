@@ -1,4 +1,4 @@
-# Copyright 2014 - 2022 Avram Lubkin, All Rights Reserved
+# Copyright 2014 - 2025 Avram Lubkin, All Rights Reserved
 
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -9,12 +9,11 @@
 """
 
 import logging
-import sys
 import unittest
 
-from pluginlib._util import LOGGER, PY2
+from pluginlib._util import LOGGER, PY2, PY_LT_3_3
 
-if sys.version_info[:2] < (3, 3):
+if PY_LT_3_3:
     import mock  # pylint: disable=import-error
 else:
     from unittest import mock  # noqa: F401  # pylint: disable=no-name-in-module, import-error

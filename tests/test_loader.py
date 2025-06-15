@@ -1,4 +1,4 @@
-# Copyright 2014 - 2022 Avram Lubkin, All Rights Reserved
+# Copyright 2014 - 2025 Avram Lubkin, All Rights Reserved
 
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -10,12 +10,14 @@
 
 import os
 import sys
+import unittest
 import warnings
 
 from pkg_resources import Distribution, EntryPoint, working_set
 
 import pluginlib._loader as loader
 from pluginlib._objects import OrderedDict
+from pluginlib._util import PY_LT_3_3
 from pluginlib import BlacklistEntry, PluginImportError, EntryPointWarning, PluginWarning
 
 from tests import TestCase, OUTPUT, mock
@@ -265,6 +267,20 @@ class TestPluginLoader(TestCase):
         self.assertTrue('xml' in plugins.parser)
         self.assertTrue('json' in plugins.parser)
         self.assertEqual(plugins.parser.json.version, '2.0')
+
+    @unittest.skipIf(PY_LT_3_3, "Namespace packages are not supported before Python 3.3")
+    def test_load_modules_namespace(self):
+        """Load modules from namespace style package"""
+
+        ploader = loader.PluginLoader(group='testdata', modules=['tests.testdata.bare.hooks'])
+        plugins = ploader.plugins
+
+        self.assertEqual(len(plugins.hook), 2)
+        self.assertTrue('fish' in plugins.hook)
+        self.assertEqual(plugins.hook.fish.version, '1.2.3')
+        self.assertEqual(plugins.hook.fish.__module__,
+                         'tests.testdata.bare.hooks.fish')
+        self.assertTrue('grappling' in plugins.hook)
 
     def test_load_paths(self):
         """Load modules from paths"""

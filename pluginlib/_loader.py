@@ -1,4 +1,4 @@
-# Copyright 2014 - 2024 Avram Lubkin, All Rights Reserved
+# Copyright 2014 - 2025 Avram Lubkin, All Rights Reserved
 
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -53,7 +53,7 @@ def format_exception(etype, value, tback, limit=None):
 def _raise_friendly_exception(exc, name, path):
     """
     Attempt to create a friendly traceback that only shows the errors
-    encountered from the plugin import and no the framework
+    encountered from the plugin import and not the framework
     """
 
     etype = exc.__class__
@@ -117,13 +117,21 @@ def _import_module(name, path=None):
             if PY2:
                 # pylint: disable-next=deprecated-method
                 loader = pkgutil.get_loader(name)  # pragma: no cover
+                if loader:  # pragma: no cover
+                    path = os.path.dirname(loader.get_filename(name))
             else:
-                loader = getattr(importlib.util.find_spec(name), 'loader', None)
+                spec = importlib.util.find_spec(name)
+                loader = getattr(spec, 'loader', None)
+                if spec:
+                    if getattr(spec, 'origin', None):
+                        path = os.path.dirname(spec.origin)
+                    else:
+                        # Workaround for weird issue encountered in 3.7 indexing raised exception
+                        # We should be able to simply do spec.submodule_search_locations[0]
+                        path = next(iter(spec.submodule_search_locations))
+
         except ImportError:
             pass
-        else:
-            if loader:
-                path = os.path.dirname(loader.get_filename(name))
 
     LOGGER.debug('Attempting to load module %s from %s', name, path)
     try:

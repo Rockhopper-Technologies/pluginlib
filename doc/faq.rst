@@ -1,5 +1,5 @@
 ..
-  Copyright 2018 - 2020 Avram Lubkin, All Rights Reserved
+  Copyright 2018 - 2025 Avram Lubkin, All Rights Reserved
 
   This Source Code Form is subject to the terms of the Mozilla Public
   License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -161,3 +161,13 @@ If desired, :py:meth:`~object.__getattr__` can be used to provide pass-through a
 
   def __getattr__(self, attr):
       return getattr(self._widget, attr)
+
+
+Why aren't namespace packages searched recursively for imports?
+---------------------------------------------------------------
+
+This is a function the `behavior <https://github.com/python/cpython/issues/73444>`_ of
+:py:func:`pkgutil.walk_packages`. While `namespace packages <https://peps.python.org/pep-0420/>`_
+are abused more than they are used, I leave it up to the underlying mechanisms to determine how
+they should be supported. If you want to include plugins in namespace packages recursively,
+I suggest using the ``paths`` argument to :py:class:`PluginLoader`.
