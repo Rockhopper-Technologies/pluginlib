@@ -9,62 +9,14 @@
 """
 
 import logging
-import unittest
+from io import StringIO
 
-from pluginlib._util import LOGGER, PY2, PY_LT_3_3
+from pluginlib._util import LOGGER
 
-if PY_LT_3_3:
-    import mock  # pylint: disable=import-error
-else:
-    from unittest import mock  # noqa: F401  # pylint: disable=no-name-in-module, import-error
-
-if PY2:
-    from StringIO import StringIO  # pylint: disable=import-error
-else:
-    from io import StringIO
 
 OUTPUT = StringIO()
 HANDLER = logging.StreamHandler(OUTPUT)
 LOGGER.addHandler(HANDLER)
 LOGGER.setLevel(logging.INFO)
 
-__all__ = ['mock', 'unittest', 'OUTPUT', 'TestCase']
-
-
-class TestCase(unittest.TestCase):
-    """Simple subclass of unittest.TestCase"""
-
-
-# Fix deprecated methods
-def assert_regex(self, text, regex, msg=None):
-    """
-    Wrapper for assertRegexpMatches
-    """
-
-    return self.assertRegexpMatches(text, regex, msg)
-
-
-def assert_not_regex(self, text, regex, msg=None):
-    """
-    Wrapper for assertNotRegexpMatches
-    """
-
-    return self.assertNotRegexpMatches(text, regex, msg)
-
-
-def assert_raises_regex(self, exception, regex, *args, **kwargs):
-    """
-    Wrapper for assertRaisesRegexp
-    """
-
-    return self.assertRaisesRegexp(exception, regex, *args, **kwargs)
-
-
-if not hasattr(TestCase, 'assertRegex'):
-    TestCase.assertRegex = assert_regex
-
-if not hasattr(TestCase, 'assertNotRegex'):
-    TestCase.assertNotRegex = assert_not_regex
-
-if not hasattr(TestCase, 'assertRaisesRegex'):
-    TestCase.assertRaisesRegex = assert_raises_regex
+__all__ = ['OUTPUT']

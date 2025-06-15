@@ -34,10 +34,8 @@ max-attributes=8
 
 [MESSAGES CONTROL]
 disable=
-    consider-using-f-string,  # Python 2
+    consider-using-f-string,  # Python 3.6+
     locally-disabled,
-    redundant-u-string-prefix,  # Python 2
-    super-with-arguments,  # Python 2
     useless-object-inheritance,
 
 
@@ -48,8 +46,7 @@ spelling-dict=en_US
 # List of comma separated words that should not be checked.
 spelling-ignore-words=
     abstractattribute, abstractmethod, abstractclassmethod, abstractstaticmethod,
-    argspecs, assertRaisesRegexp, assertNotRegexpMatches, assertRegexpMatches,
-    asyncio, attr, autoattribute, Args, Avram, Lubkin,
+    argspecs, asyncio, attr, autoattribute, Args, Avram, Lubkin,
     basename, BlacklistEntry, bool, Boolean,
     classmethod, cls, coroutine,
     EntryPointWarning, errorcode, exc,
@@ -59,13 +56,13 @@ spelling-ignore-words=
     json, JSON,
     KeyError,
     Metaclass, metaclass, Mixin, mixin, Mozilla, MPL, MRO,
-    namespace, noqa,
+    namespace, NoneType, noqa,
     OrderedDict,
     Pluginlib, pluginlib, PluginlibError, PluginLoader, PluginWarning, popitem, pragma, py, pypy,
     repr,
     setdefault, sphinxcontrib, str, Skipload, staticmethod, submethod,
     subclasses, Subpackage, Submodule, submodules, sys,
     TestCase, traceback, tuple, tuples,
-    unittest, UserWarning,
+    UserWarning,
     wildcard,
     XML

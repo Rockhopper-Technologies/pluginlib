@@ -31,7 +31,7 @@ Regular methods always use the :py:func:`@abstractmethod  <abstractmethod>` deco
 .. code-block:: python
 
     @pluginlib.Parent('parser')
-    class Parser(object):
+    class Parser:
 
         @pluginlib.abstractmethod
         def parse(self, string):
@@ -44,7 +44,7 @@ For Python 3.3 and above, static methods, class methods, and properties also use
 .. code-block:: python
 
     @pluginlib.Parent('parser')
-    class Parser(object):
+    class Parser:
 
         @staticmethod
         @pluginlib.abstractmethod
@@ -69,7 +69,7 @@ For code that must be compatible with older versions of Python, use the
 .. code-block:: python
 
     @pluginlib.Parent('parser')
-    class Parser(object):
+    class Parser:
 
         @pluginlib.abstractstaticmethod
         def abstract_staticmethod():
@@ -90,7 +90,7 @@ Abstract attributes are defined using :py:class:`abstractattribute`.
 .. code-block:: python
 
     @pluginlib.Parent('parser')
-    class Parser(object):
+    class Parser:
         abstract_attribute = pluginlib.abstractattribute
 
 
@@ -237,7 +237,7 @@ will be available from the :py:class:`PluginLoader` instance.
 .. code-block:: python
 
     @pluginlib.Parent('parser', group='my_framework')
-    class Parser(object):
+    class Parser:
 
         @pluginlib.abstractmethod
         def parse(self, string):

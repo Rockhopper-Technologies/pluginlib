@@ -13,10 +13,10 @@ This module contains pluginlib object classes
 from collections import OrderedDict
 from packaging.version import parse as parse_version
 
-from pluginlib._util import BASESTRING, CachingDict, DictWithDotNotation, OPERATORS
+from pluginlib._util import CachingDict, DictWithDotNotation, OPERATORS
 
 
-class BlacklistEntry(object):
+class BlacklistEntry:
     """
     Args:
         plugin_type(str): Parent type
@@ -69,7 +69,7 @@ class BlacklistEntry(object):
             self.version = version
             self.operator = operator
 
-        if self.version is not None and not isinstance(self.version, BASESTRING):
+        if self.version is not None and not isinstance(self.version, str):
             raise TypeError('version must be a string, received %s' % type(self.version).__name__)
 
         if self.operator is None:
@@ -114,8 +114,7 @@ class GroupDict(DictWithDotNotation):
                 if key in type_filter:
                     yield key, val
         else:
-            for key, val in self.items():
-                yield key, val
+            yield from self.items()
 
     def _filter(self, blacklist=None, newest_only=False, type_filter=None, **kwargs):
         """
@@ -177,7 +176,7 @@ class TypeDict(GroupDict):
     _bl_empty = None  # Not callable, but never called since _skip_empty is True
 
     def __init__(self, parent, *args, **kwargs):
-        super(TypeDict, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._parent = parent
 
 

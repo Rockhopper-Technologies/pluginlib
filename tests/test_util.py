@@ -1,4 +1,4 @@
-# Copyright 2014 - 2022 Avram Lubkin, All Rights Reserved
+# Copyright 2014 - 2025 Avram Lubkin, All Rights Reserved
 
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -8,25 +8,9 @@
 **Test module for pluginlib._util**
 """
 
-import sys
+from unittest import TestCase
 
 import pluginlib._util as util
-
-from tests import TestCase
-
-
-class TestReraise(TestCase):
-    """Tests for raise_with_traceback"""
-    def test_raise_with_traceback(self):
-        """Caught error should raise as expected"""
-        try:
-            raise TypeError('Not my type')
-        except TypeError as e:
-            tback = getattr(e, '__traceback__', sys.exc_info()[2])
-            exception = AttributeError('Nah: %s' % str(e))
-
-            with self.assertRaisesRegex(AttributeError, 'Nah: Not my type'):
-                util.raise_with_traceback(exception, tback)
 
 
 class TestClassProperty(TestCase):
@@ -74,7 +58,7 @@ class TestAllowBareDecorator(TestCase):
         """Decorator should work with or without parentheses"""
 
         @util.allow_bare_decorator
-        class Decorator(object):
+        class Decorator:
             """Sample decorator class"""
 
             def __init__(self, name=None, group=None):
@@ -87,7 +71,7 @@ class TestAllowBareDecorator(TestCase):
                 return cls
 
         @Decorator
-        class Class1(object):
+        class Class1:
             """Bare decorator"""
 
         self.assertEqual(Class1.__name__, 'Class1')
@@ -95,7 +79,7 @@ class TestAllowBareDecorator(TestCase):
         self.assertEqual(Class1.group, 'default')
 
         @Decorator()
-        class Class2(object):
+        class Class2:
             """Decorator without arguments"""
 
         self.assertEqual(Class2.__name__, 'Class2')
@@ -103,7 +87,7 @@ class TestAllowBareDecorator(TestCase):
         self.assertEqual(Class2.group, 'default')
 
         @Decorator('spam')
-        class Class3(object):
+        class Class3:
             """Decorator with one argument"""
 
         self.assertEqual(Class3.__name__, 'Class3')
@@ -111,7 +95,7 @@ class TestAllowBareDecorator(TestCase):
         self.assertEqual(Class3.group, 'default')
 
         @Decorator('spam', 'ham')
-        class Class4(object):
+        class Class4:
             """Decorator with two arguments"""
 
         self.assertEqual(Class4.__name__, 'Class4')

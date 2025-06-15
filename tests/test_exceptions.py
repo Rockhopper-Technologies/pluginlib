@@ -1,4 +1,4 @@
-# Copyright 2014 - 2018 Avram Lubkin, All Rights Reserved
+# Copyright 2014 - 2025 Avram Lubkin, All Rights Reserved
 
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -9,10 +9,9 @@
 """
 
 import warnings
+from unittest import TestCase
 
 from pluginlib import exceptions
-
-from tests import TestCase
 
 
 # Because we want the test names to match the class names

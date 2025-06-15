@@ -10,6 +10,8 @@
 Provides functions and classes for loading plugins
 """
 
+
+import contextlib
 import importlib
 from inspect import ismodule
 import os
@@ -17,40 +19,18 @@ import pkgutil
 import sys
 import traceback
 import warnings
+from collections.abc import Iterable
 
 from pluginlib.exceptions import PluginImportError, EntryPointWarning
 from pluginlib._objects import BlacklistEntry
 from pluginlib._parent import get_plugins
-from pluginlib._util import BASESTRING, LOGGER, NoneType, PY2, PY_LT_3_10, raise_with_traceback
+from pluginlib._util import LOGGER, NoneType, PY_LT_3_10
 
-try:
-    from collections.abc import Iterable
-except ImportError:  # pragma: no cover
-    # For Python < 3.3
-    from collections import Iterable  # pylint: disable=deprecated-class
 
 if PY_LT_3_10:  # pragma: no cover
     from importlib_metadata import entry_points, EntryPoint  # pylint: disable=import-error
 else:
     from importlib.metadata import entry_points, EntryPoint
-
-
-def format_exception(etype, value, tback, limit=None):
-    """
-    Python 2 compatible version of traceback.format_exception
-    Accepts negative limits like the Python 3 version
-    """
-
-    rtn = ['Traceback (most recent call last):\n']
-
-    if limit is None or limit >= 0:
-        rtn.extend(traceback.format_tb(tback, limit))
-    else:
-        rtn.extend(traceback.format_list(traceback.extract_tb(tback)[limit:]))
-
-    rtn.extend(traceback.format_exception_only(etype, value))
-
-    return rtn
 
 
 def _raise_friendly_exception(exc, name, path):
@@ -83,15 +63,13 @@ def _raise_friendly_exception(exc, name, path):
     else:
         limit = 0 - len(tb_list) + max(start, here)
 
-    # pylint: disable=wrong-spelling-in-comment
-    # friendly = ''.join(traceback.format_exception(etype, exc, tback, limit))
-    friendly = ''.join(format_exception(etype, exc, tback, limit))
+    friendly = ''.join(traceback.format_exception(etype, exc, tback, limit))
 
     # Format exception
     msg = 'Error while importing candidate plugin module %s from %s' % (name, path)
     exception = PluginImportError('%s: %s' % (msg, repr(exc)), friendly=friendly)
 
-    raise_with_traceback(exception, tback)
+    raise exception.with_traceback(tback) from None
 
 
 def _import_module(name, path=None):
@@ -116,26 +94,14 @@ def _import_module(name, path=None):
         name = epoint.module
 
     if path is None:
-        try:
-            if PY2:
-                # pylint: disable-next=deprecated-method
-                loader = pkgutil.get_loader(name)  # pragma: no cover
-                if loader:  # pragma: no cover
-                    path = os.path.dirname(loader.get_filename(name))
-            else:
-                spec = importlib.util.find_spec(name)
-                loader = getattr(spec, 'loader', None)
-                if spec:
-                    if getattr(spec, 'origin', None):
-                        path = os.path.dirname(spec.origin)
-                    else:
-                        # Workaround for weird issue encountered in 3.7 indexing raised exception
-                        # We should be able to simply do spec.submodule_search_locations[0]
-                        path = next(iter(spec.submodule_search_locations))
-
-        except ImportError:
-            pass
-
+        with contextlib.suppress(ImportError):
+            spec = importlib.util.find_spec(name)
+            if spec:
+                path = (
+                    os.path.dirname(spec.origin)
+                    if getattr(spec, 'origin', None)
+                    else next(iter(spec.submodule_search_locations))
+                )
     LOGGER.debug('Attempting to load module %s from %s', name, path)
     try:
         mod = epoint.load() if epoint else importlib.import_module(name)
@@ -187,7 +153,7 @@ def _recursive_path_import(path, prefix_package):
     for root, dirs, files in os.walk(path):
         # If root is a Python module, we won't walk any farther down it
         # find_module() seems to be recursive in Python 3
-        if '__init__.py' in files and not PY2:  # pragma: no cover
+        if '__init__.py' in files:
             dirs.clear()
             if root != path:
                 continue
@@ -204,21 +170,17 @@ def _recursive_path_import(path, prefix_package):
         for finder, name, is_pkg in pkgutil.walk_packages([root], prefix=prefix):
             LOGGER.debug('Attempting to load module %s from %s', name, finder.path)
             try:
-                # find_module() was deprecated in 3.4
-                if PY2:  # pragma: no cover
-                    finder.find_module(name).load_module(name)
-                else:
-                    spec = finder.find_spec(name)
-                    module = importlib.util.module_from_spec(spec)
-                    sys.modules[name] = module
-                    spec.loader.exec_module(module)
+                spec = finder.find_spec(name)
+                module = importlib.util.module_from_spec(spec)
+                sys.modules[name] = module
+                spec.loader.exec_module(module)
 
             except Exception as e:  # pylint: disable=broad-except
                 _raise_friendly_exception(e, name, root)
 
 
 # pylint: disable=too-many-instance-attributes,too-many-arguments
-class PluginLoader(object):
+class PluginLoader:
     """
     Args:
         group(str): Group to retrieve plugins from
@@ -274,13 +236,13 @@ class PluginLoader(object):
         # Make sure we got iterables
         for argname, arg in (('modules', modules), ('paths', paths), ('blacklist', blacklist),
                              ('type_filter', type_filter)):
-            if not isinstance(arg, (NoneType, Iterable)) or isinstance(arg, BASESTRING):
+            if not isinstance(arg, (NoneType, Iterable)) or isinstance(arg, str):
                 raise TypeError("Expecting iterable for '%s', received %s" % (argname, type(arg)))
 
         # Make sure we got strings
         for argname, arg in (('library', library), ('entry_point', entry_point),
                              ('prefix_package', prefix_package)):
-            if not isinstance(arg, (NoneType, BASESTRING)):
+            if not isinstance(arg, (NoneType, str)):
                 raise TypeError("Expecting string for '%s', received %s" % (argname, type(arg)))
 
         self.group = group or '_default'
@@ -303,7 +265,9 @@ class PluginLoader(object):
                         entry = BlacklistEntry(*entry)
                     except (AttributeError, TypeError) as e:
                         # pylint: disable=raise-missing-from
-                        raise AttributeError("Invalid blacklist entry '%s': %s " % (entry, e))
+                        raise AttributeError(
+                            "Invalid blacklist entry '%s': %s " % (entry, e)
+                        ) from e
                 else:
                     raise AttributeError("Invalid blacklist entry '%s': Not an iterable" % entry)
 

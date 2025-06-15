@@ -8,24 +8,21 @@
 **Test module for pluginlib._loader**
 """
 
+import importlib
 import os
 import sys
-import unittest
 import warnings
+from unittest import mock, TestCase
 
 import pluginlib._loader as loader
 from pluginlib._objects import OrderedDict
-from pluginlib._util import PY_LT_3_3, PY_LT_3_10
+from pluginlib._util import PY_LT_3_10
 from pluginlib import BlacklistEntry, PluginImportError, EntryPointWarning, PluginWarning
 
-from tests import TestCase, OUTPUT, mock
+from tests import OUTPUT
 import tests.testdata
 import tests.testdata.parents
 
-try:
-    from importlib import reload
-except ImportError:
-    pass
 
 if PY_LT_3_10:
     from importlib_metadata import EntryPoint, EntryPoints  # pylint: disable=import-error
@@ -131,7 +128,7 @@ class TestPluginLoader(TestCase):
         loader.get_plugins().clear()
         unload('tests.testdata.lib')
         unload('pluginlib.importer.')
-        reload(tests.testdata.parents)
+        importlib.reload(tests.testdata.parents)
 
     def test_load_lib(self):
         """Load modules from standard library"""
@@ -284,7 +281,6 @@ class TestPluginLoader(TestCase):
         self.assertTrue('json' in plugins.parser)
         self.assertEqual(plugins.parser.json.version, '2.0')
 
-    @unittest.skipIf(PY_LT_3_3, "Namespace packages are not supported before Python 3.3")
     def test_load_modules_namespace(self):
         """Load modules from namespace style package"""
 

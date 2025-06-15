@@ -1,4 +1,4 @@
-# Copyright 2014 - 2024 Avram Lubkin, All Rights Reserved
+# Copyright 2014 - 2025 Avram Lubkin, All Rights Reserved
 
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -10,9 +10,9 @@
 Provides plugin bases class and Parent decorator
 """
 
-import inspect
 import sys
 import warnings
+from inspect import getfullargspec, iscoroutinefunction, isfunction
 
 from pluginlib.exceptions import PluginWarning
 from pluginlib._objects import GroupDict, TypeDict, PluginDict
@@ -23,22 +23,8 @@ from pluginlib._util import (allow_bare_decorator, ClassProperty, DictWithDotNot
 DEFAULT = '_default'
 UNDEFINED = Undefined()
 
-isfunction = inspect.isfunction  # pylint: disable=invalid-name
 
-# Asyncio is not available in 2.7
-iscoroutinefunction = getattr(inspect, 'iscoroutinefunction', lambda func: False)
-
-# Support for deprecated method in 2.7
-getfullargspec = getattr(inspect, 'getfullargspec', getattr(inspect, 'getargspec', None))
-
-try:
-    STR = unicode
-
-except NameError:
-    STR = str
-
-
-class ClassInspector(object):
+class ClassInspector:
     """
     Args:
         cls(:py:class:`Plugin`): Parent class
@@ -90,9 +76,6 @@ class ClassInspector(object):
 
     def __bool__(self):
         return self.errorcode == 0
-
-    # Python 2 equivalent
-    __nonzero__ = __bool__
 
     def _check_skipload(self):
         """
@@ -305,7 +288,7 @@ class PluginType(type):
                 raise ValueError('parent must be unique: %s' % new._type_)
 
             plugindict = group[new._type_].get(new.name, UNDEFINED)
-            version = STR(new.version or 0)
+            version = str(new.version or 0)
 
             # Check for duplicates. Warn and ignore
             if plugindict and version in plugindict:
@@ -323,7 +306,7 @@ class PluginType(type):
                     group[new._type_].setdefault(new.name, PluginDict())[version] = new
 
                 else:
-                    skipmsg = u'Skipping %s class %s.%s: Reason: %s'
+                    skipmsg = 'Skipping %s class %s.%s: Reason: %s'
                     args = (new, new.__module__, new.__name__, result.message)
 
                     if result.errorcode < 100:
@@ -357,7 +340,7 @@ class PluginType(type):
         return cls.__plugins[cls._group_ or DEFAULT][cls._type_]
 
 
-class Plugin(object):
+class Plugin:
     """
     **Mixin class for plugins.
     All parents and child plugins will inherit from this class automatically.**
@@ -438,7 +421,7 @@ class Plugin(object):
 
 
 @allow_bare_decorator
-class Parent(object):
+class Parent:
     """
     Args:
         plugin_type(str): Plugin type

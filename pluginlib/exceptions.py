@@ -1,4 +1,4 @@
-# Copyright 2014 - 2018 Avram Lubkin, All Rights Reserved
+# Copyright 2014 - 2025 Avram Lubkin, All Rights Reserved
 
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -28,7 +28,7 @@ class PluginlibError(Exception):
     """
 
     def __init__(self, *args, **kwargs):
-        super(PluginlibError, self).__init__(*args)
+        super().__init__(*args)
         self.friendly = kwargs.get('friendly', None)
 
 

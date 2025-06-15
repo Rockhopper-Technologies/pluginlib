@@ -8,7 +8,6 @@
 **Pluginlib setup file**
 """
 import os
-import sys
 
 from setuptools import setup, find_packages
 
@@ -16,11 +15,6 @@ from setup_helpers import get_version, readme
 
 INSTALL_REQUIRE = ['packaging', 'importlib-metadata; python_version < "3.10"']
 TESTS_REQUIRE = []
-
-if sys.version_info[:2] < (3, 3):
-
-    # Include unittest.mock from 3.3+
-    TESTS_REQUIRE.append('mock')
 
 setup(
     name='pluginlib',
@@ -44,7 +38,6 @@ setup(
         'Operating System :: Microsoft :: Windows',
         'Operating System :: MacOS',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
@@ -59,5 +52,6 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
     keywords='plugin, plugins, pluginlib',
-    test_loader="unittest:TestLoader"
+    test_loader="unittest:TestLoader",
+    python_requires='>=3.5',
 )

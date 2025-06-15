@@ -121,7 +121,7 @@ For more information, see the `Abstract Methods`_ section.
     import pluginlib
 
     @pluginlib.Parent('parser')
-    class Parser(object):
+    class Parser():
 
         @pluginlib.abstractmethod
         def parse(self, string):

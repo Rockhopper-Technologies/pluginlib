@@ -1,4 +1,4 @@
-# Copyright 2014 - 2023 Avram Lubkin, All Rights Reserved
+# Copyright 2014 - 2025 Avram Lubkin, All Rights Reserved
 
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -8,9 +8,9 @@
 **Test module for pluginlib._objects**
 """
 
-import pluginlib._objects as objects
+from unittest import mock, TestCase
 
-from tests import TestCase, mock
+import pluginlib._objects as objects
 
 
 # pylint: disable=protected-access

@@ -1,5 +1,5 @@
 ..
-  Copyright 2018 Avram Lubkin, All Rights Reserved
+  Copyright 2018 - 2025 Avram Lubkin, All Rights Reserved
 
   This Source Code Form is subject to the terms of the Mozilla Public
   License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -50,7 +50,7 @@ For more information, see the :ref:`abstract-methods` section.
     import pluginlib
 
     @pluginlib.Parent('parser')
-    class Parser(object):
+    class Parser:
 
         @pluginlib.abstractmethod
         def parse(self, string):

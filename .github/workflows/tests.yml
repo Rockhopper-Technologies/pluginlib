@@ -20,7 +20,7 @@ jobs:
       fail-fast: false
 
       matrix:
-        python-version:  ['2.7', '3.5', '3.6', '3.7', '3.8', '3.9', '3.10', '3.11', '3.12']
+        python-version:  ['3.5', '3.6', '3.7', '3.8', '3.9', '3.10', '3.11', '3.12']
         include:
 
           - python-version: '3.13'
@@ -40,10 +40,6 @@ jobs:
             container: 'python:3.14-rc'
             optional: true
 
-          - python-version: pypy-2.7
-            toxenv: pypy27
-            container: pypy:2.7
-
           - python-version: pypy-3
             toxenv: pypy3
             container: pypy:3
@@ -55,7 +51,7 @@ jobs:
       # This is only needed for Python 3.6 and earlier because Tox 4 requires 3.7+
       - name: Fix TOXENV
         run: echo "TOXENV=$(echo $TOXENV | sed 's/\.//g')" >> $GITHUB_ENV
-        if: ${{ contains(fromJson('["2.7", "3.5", "3.6"]'), matrix.python-version) }}
+        if: ${{ contains(fromJson('["3.5", "3.6"]'), matrix.python-version) }}
 
       - name: Install OS Dependencies
         run: apt update && apt -y install ${{ join(matrix.os-deps, ' ') }}
