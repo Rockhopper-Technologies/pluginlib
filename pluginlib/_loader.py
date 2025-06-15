@@ -18,18 +18,21 @@ import sys
 import traceback
 import warnings
 
-from pkg_resources import iter_entry_points, EntryPoint
-
 from pluginlib.exceptions import PluginImportError, EntryPointWarning
 from pluginlib._objects import BlacklistEntry
 from pluginlib._parent import get_plugins
-from pluginlib._util import BASESTRING, LOGGER, NoneType, PY2, raise_with_traceback
+from pluginlib._util import BASESTRING, LOGGER, NoneType, PY2, PY_LT_3_10, raise_with_traceback
 
 try:
     from collections.abc import Iterable
-except ImportError:   # pragma: no cover
+except ImportError:  # pragma: no cover
     # For Python < 3.3
     from collections import Iterable  # pylint: disable=deprecated-class
+
+if PY_LT_3_10:  # pragma: no cover
+    from importlib_metadata import entry_points, EntryPoint  # pylint: disable=import-error
+else:
+    from importlib.metadata import entry_points, EntryPoint
 
 
 def format_exception(etype, value, tback, limit=None):
@@ -110,7 +113,7 @@ def _import_module(name, path=None):
     epoint = None
     if isinstance(name, EntryPoint):
         epoint = name
-        name = epoint.module_name
+        name = epoint.module
 
     if path is None:
         try:
@@ -353,12 +356,12 @@ class PluginLoader(object):
         # Get entry points
         if self.entry_point:
             LOGGER.info('Loading plugins from entry points group %s', self.entry_point)
-            for epoint in iter_entry_points(group=self.entry_point):
+            for epoint in entry_points(group=self.entry_point):
                 try:
                     mod = _import_module(epoint)
                 except PluginImportError as e:
                     warnings.warn("Module %s can not be loaded for entry point %s: %s" %
-                                  (epoint.module_name, epoint.name, e), EntryPointWarning)
+                                  (epoint.module, epoint.name, e), EntryPointWarning)
                     continue
 
                 # If we have a package, walk it

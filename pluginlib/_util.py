@@ -20,6 +20,7 @@ import sys
 
 PY2 = sys.version_info[0] == 2
 PY_LT_3_3 = sys.version_info[:2] < (3, 3)
+PY_LT_3_10 = sys.version_info[:2] < (3, 10)
 
 # Setup logger
 LOGGER = logging.getLogger('pluginlib')

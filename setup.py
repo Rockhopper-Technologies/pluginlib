@@ -1,4 +1,4 @@
-# Copyright 2018 - 2024 Avram Lubkin, All Rights Reserved
+# Copyright 2018 - 2025 Avram Lubkin, All Rights Reserved
 
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -14,7 +14,7 @@ from setuptools import setup, find_packages
 
 from setup_helpers import get_version, readme
 
-INSTALL_REQUIRE = ['setuptools']
+INSTALL_REQUIRE = ['packaging', 'importlib-metadata; python_version < "3.10"']
 TESTS_REQUIRE = []
 
 if sys.version_info[:2] < (3, 3):

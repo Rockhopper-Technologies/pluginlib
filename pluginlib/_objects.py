@@ -1,4 +1,4 @@
-# Copyright 2014 - 2022 Avram Lubkin, All Rights Reserved
+# Copyright 2014 - 2025 Avram Lubkin, All Rights Reserved
 
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -11,7 +11,7 @@ This module contains pluginlib object classes
 """
 
 from collections import OrderedDict
-from pkg_resources import parse_version
+from packaging.version import parse as parse_version
 
 from pluginlib._util import BASESTRING, CachingDict, DictWithDotNotation, OPERATORS
 
@@ -42,7 +42,7 @@ class BlacklistEntry(object):
 
             BlacklistEntry('parser', 'json', '>=', '1.0')
 
-    ``version`` is evaluated using :py:func:`pkg_resources.parse_version`
+    ``version`` is evaluated using :py:func:`packaging.version.parse`
     and should conform to `PEP 440`_
 
     .. _PEP 440: https://www.python.org/dev/peps/pep-0440/
@@ -190,7 +190,7 @@ class PluginDict(CachingDict):
         """
         Return list of keys sorted by version
 
-        Sorting is done based on :py:func:`pkg_resources.parse_version`
+        Sorting is done based on :py:func:`packaging.version.parse`
         """
 
         try:

@@ -1,5 +1,5 @@
 ..
-  Copyright 2018 Avram Lubkin, All Rights Reserved
+  Copyright 2018 - 2025 Avram Lubkin, All Rights Reserved
 
   This Source Code Form is subject to the terms of the Mozilla Public
   License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -107,7 +107,7 @@ Plugin versions have two uses in Pluginlib:
     3. :py:attr:`PluginLoader.plugins_all` returns all unfiltered versions of plugins
 
 Versions must be strings and should adhere to `PEP 440`_. Version strings are
-evaluated using :py:func:`pkg_resources.parse_version`.
+evaluated using :py:func:`packaging.version.parse`.
 
 By default, all plugins will have a version of :py:data:`None`,
 which is treated as ``'0'`` when compared against other versions.

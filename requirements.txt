@@ -1,1 +1,2 @@
-setuptools
+packaging
+importlib-metadata; python_version < "3.10"
