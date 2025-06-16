@@ -13,8 +13,7 @@ import textwrap
 import warnings
 from unittest import TestCase
 
-from pluginlib import (abstractmethod, abstractproperty, abstractstaticmethod,
-                       abstractclassmethod, abstractattribute)
+from pluginlib import abstractmethod, abstractattribute
 import pluginlib._parent as parent
 
 from tests import OUTPUT
@@ -434,7 +433,8 @@ class TestPluginType(TestCase):
         class Parent:
             """Parent with abstract static method"""
 
-            @abstractstaticmethod
+            @staticmethod
+            @abstractmethod
             def abstract():
                 """Abstract static method"""
 
@@ -452,7 +452,8 @@ class TestPluginType(TestCase):
         class Parent:
             """Parent with abstract static method"""
 
-            @abstractstaticmethod
+            @staticmethod
+            @abstractmethod
             def abstract(some_arg):
                 """Abstract static method with another argument"""
 
@@ -465,7 +466,8 @@ class TestPluginType(TestCase):
         class Parent:
             """Parent with abstract class method"""
 
-            @abstractclassmethod
+            @classmethod
+            @abstractmethod
             def abstract(cls):  # noqa: N805
                 """Abstract class method"""
 
@@ -483,7 +485,8 @@ class TestPluginType(TestCase):
         class Parent:
             """Parent with abstract class method"""
 
-            @abstractclassmethod
+            @classmethod
+            @abstractmethod
             def abstract(cls, some_arg):  # noqa: N805
                 """Abstract class method with another argument"""
 
@@ -496,7 +499,8 @@ class TestPluginType(TestCase):
         class Parent:
             """Parent with abstract property"""
 
-            @abstractproperty  # Python 2  # pylint: disable=deprecated-decorator
+            @property
+            @abstractmethod
             def abstract(self):
                 """Abstract property"""
 

@@ -48,7 +48,7 @@ spelling-dict=en_US
 
 # List of comma separated words that should not be checked.
 spelling-ignore-words=
-    abstractattribute, abstractmethod, abstractclassmethod, abstractstaticmethod,
+    abstractattribute, abstractclassmethod, abstractmethod, abstractproperty, abstractstaticmethod,
     argspecs, asyncio, attr, autoattribute, Args, Avram, Lubkin,
     basename, BlacklistEntry, bool, Boolean,
     classmethod, cls, coroutine,

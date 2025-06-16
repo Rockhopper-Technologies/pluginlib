@@ -10,12 +10,13 @@
 This module contains generic functions for use in other modules
 """
 
-from abc import abstractmethod
-from functools import update_wrapper, wraps
-from inspect import isclass
+import abc
 import logging
 import operator as _operator
 import sys
+import warnings
+from functools import update_wrapper, wraps
+from inspect import isclass
 
 
 PY_LT_3_10 = sys.version_info[:2] < (3, 10)
@@ -178,7 +179,13 @@ class abstractstaticmethod(staticmethod):  # noqa: N801  # pylint: disable=inval
     __isabstractmethod__ = True
 
     def __init__(self, func):
-        super().__init__(abstractmethod(func))
+        warnings.warn(
+            "abstractstaticmethod is deprecated since Python 3.3 and will be removed in future versions. "
+            "Use @staticmethod combined with @abstractmethod instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        super().__init__(abc.abstractmethod(func))
 
 
 class abstractclassmethod(classmethod):  # noqa: N801  # pylint: disable=invalid-name
@@ -202,7 +209,13 @@ class abstractclassmethod(classmethod):  # noqa: N801  # pylint: disable=invalid
     __isabstractmethod__ = True
 
     def __init__(self, func):
-        super().__init__(abstractmethod(func))
+        warnings.warn(
+            "abstractclassmethod is deprecated since Python 3.3 and will be removed in future versions. "
+            "Use @classmethod combined with @abstractmethod instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        super().__init__(abc.abstractmethod(func))
 
 
 class abstractattribute:  # noqa: N801  # pylint: disable=invalid-name
@@ -217,3 +230,17 @@ class abstractattribute:  # noqa: N801  # pylint: disable=invalid-name
 
     """
     __isabstractmethod__ = True
+
+
+def abstractproperty(*args, **kwargs):
+    """
+    Wrapper for abstractproperty to raise deprecation warning
+    """
+
+    warnings.warn(
+        "abstractproperty is deprecated since Python 3.3 and will be removed in future versions. "
+        "Use @property combined with @abstractmethod instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return abc.abstractproperty(*args, **kwargs)

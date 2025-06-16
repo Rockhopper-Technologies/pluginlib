@@ -181,33 +181,42 @@ class TestDictWithDotNotation(TestCase):
             dotdict['notInDict']  # pylint: disable=pointless-statement
 
 
-class TestClassAbstractStaticMethod(TestCase):
-    """Tests for abstractstaticmethod decorator class"""
+class TestDeprecatedMethods(TestCase):
+    """Tests for deprecated abstract decorator class"""
+
+    def setUp(self):
+
+        def func():
+            """Dummy function"""
+            return True
+
+        self.func = func
 
     def test_abstractstaticmethod(self):
         """Creates a static method marked as an abstract method"""
 
-        def func():
-            """Dummy function"""
-            return True
+        with self.assertWarns(DeprecationWarning):
+            meth = util.abstractstaticmethod(self.func)
 
-        meth = util.abstractstaticmethod(func)
         self.assertIsInstance(meth, staticmethod)
         self.assertTrue(getattr(meth, '__isabstractmethod__', False))
         self.assertTrue(getattr(meth.__func__, '__isabstractmethod__', False))
 
-
-class TestClassAbstractClassMethod(TestCase):
-    """Tests for abstractclassmethod decorator class"""
-
     def test_abstractclassmethod(self):
         """Creates a class method marked as an abstract method"""
 
-        def func():
-            """Dummy function"""
-            return True
+        with self.assertWarns(DeprecationWarning):
+            meth = util.abstractclassmethod(self.func)
 
-        meth = util.abstractclassmethod(func)
         self.assertIsInstance(meth, classmethod)
         self.assertTrue(getattr(meth, '__isabstractmethod__', False))
         self.assertTrue(getattr(meth.__func__, '__isabstractmethod__', False))
+
+    def test_abstractpropertymethod(self):
+        """Creates a property marked as abstract"""
+
+        with self.assertWarns(DeprecationWarning):
+            prop = util.abstractproperty(self.func)
+
+        self.assertIsInstance(prop, property)
+        self.assertTrue(getattr(prop, '__isabstractmethod__', False))
