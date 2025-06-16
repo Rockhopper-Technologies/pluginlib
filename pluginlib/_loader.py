@@ -66,8 +66,8 @@ def _raise_friendly_exception(exc, name, path):
     friendly = ''.join(traceback.format_exception(etype, exc, tback, limit))
 
     # Format exception
-    msg = 'Error while importing candidate plugin module %s from %s' % (name, path)
-    exception = PluginImportError('%s: %s' % (msg, repr(exc)), friendly=friendly)
+    msg = f'Error while importing candidate plugin module {name} from {path}'
+    exception = PluginImportError(f'{msg}: {repr(exc)}', friendly=friendly)
 
     raise exception.with_traceback(tback) from None
 
@@ -120,13 +120,10 @@ def _recursive_import(package):
     Import all modules from a package recursively
     """
 
-    prefix = '%s.' % (package.__name__)
-
     path = getattr(package, '__path__', None)
-
     if path:
         # pylint: disable=unused-variable
-        for finder, name, is_pkg in pkgutil.walk_packages(path, prefix=prefix):
+        for finder, name, is_pkg in pkgutil.walk_packages(path, prefix=f'{package.__name__}.'):
             _import_module(name, finder.path)
 
 
@@ -146,8 +143,7 @@ def _recursive_path_import(path, prefix_package):
 
     # Include basename of path in module prefix
     basename = os.path.basename(path.strip('/'))
-    root_prefix = '%s.%s.' % (prefix_package, basename)
-    prefix_template = '%s%%s.' % root_prefix
+    root_prefix = f'{prefix_package}.{basename}.'
 
     # Walk path
     for root, dirs, files in os.walk(path):
@@ -162,8 +158,7 @@ def _recursive_path_import(path, prefix_package):
         if root == path:
             prefix = root_prefix
         else:
-            relpath = os.path.relpath(root, path)
-            prefix = prefix_template % relpath.replace(os.sep, '.')
+            prefix = f'{root_prefix}{os.path.relpath(root, path).replace(os.sep, ".")}.'
 
         # Walk root and import modules
         # pylint: disable=unused-variable
@@ -237,13 +232,13 @@ class PluginLoader:
         for argname, arg in (('modules', modules), ('paths', paths), ('blacklist', blacklist),
                              ('type_filter', type_filter)):
             if not isinstance(arg, (NoneType, Iterable)) or isinstance(arg, str):
-                raise TypeError("Expecting iterable for '%s', received %s" % (argname, type(arg)))
+                raise TypeError(f"Expecting iterable for '{argname}', received {type(arg)}")
 
         # Make sure we got strings
         for argname, arg in (('library', library), ('entry_point', entry_point),
                              ('prefix_package', prefix_package)):
             if not isinstance(arg, (NoneType, str)):
-                raise TypeError("Expecting string for '%s', received %s" % (argname, type(arg)))
+                raise TypeError(f"Expecting string for '{argname}', received {type(arg)}")
 
         self.group = group or '_default'
         self.library = library
@@ -266,10 +261,10 @@ class PluginLoader:
                     except (AttributeError, TypeError) as e:
                         # pylint: disable=raise-missing-from
                         raise AttributeError(
-                            "Invalid blacklist entry '%s': %s " % (entry, e)
+                            "Invalid blacklist entry f'{entry}': {e} "
                         ) from e
                 else:
-                    raise AttributeError("Invalid blacklist entry '%s': Not an iterable" % entry)
+                    raise AttributeError(f"Invalid blacklist entry '{entry}': Not an iterable")
 
                 self.blacklist.append(entry)
 
@@ -290,9 +285,9 @@ class PluginLoader:
                 continue
 
             if val:
-                args.append('%s=%r' % (attr, val))
+                args.append(f'{attr}={val!r}')
 
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(args))
+        return f'{self.__class__.__name__}({", ".join(args)})'
 
     def load_modules(self):
         """
@@ -324,15 +319,18 @@ class PluginLoader:
                 try:
                     mod = _import_module(epoint)
                 except PluginImportError as e:
-                    warnings.warn("Module %s can not be loaded for entry point %s: %s" %
-                                  (epoint.module, epoint.name, e), EntryPointWarning)
+                    warnings.warn(
+                        f'Module {epoint.module} can not be loaded for entry point {epoint.name}: '
+                        f'{e}',
+                        EntryPointWarning
+                    )
                     continue
 
                 # If we have a package, walk it
                 if ismodule(mod):
                     _recursive_import(mod)
                 else:
-                    warnings.warn("Entry point '%s' is not a module or package" % epoint.name,
+                    warnings.warn(f"Entry point '{epoint.name}' is not a module or package",
                                   EntryPointWarning)
 
         # Load auxiliary modules

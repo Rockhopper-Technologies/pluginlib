@@ -101,10 +101,12 @@ class TestPluginLoaderInit(TestCase):
         self.assertEqual(repr(ploader), output)
 
         blacklist = [('parser', 'json'), ('parser', 'xml', '<', '1.0')]
-        output = "PluginLoader(blacklist=(%r, %r))" % (BlacklistEntry('parser', 'json'),
-                                                       BlacklistEntry('parser', 'xml', '<', '1.0'))
         ploader = loader.PluginLoader(blacklist=blacklist)
-        self.assertEqual(repr(ploader), output)
+
+        entry1 = BlacklistEntry('parser', 'json')
+        entry2 = BlacklistEntry('parser', 'xml', '<', '1.0')
+
+        self.assertEqual(repr(ploader), f'PluginLoader(blacklist=({entry1!r}, {entry2!r}))')
 
 
 def unload(module):

@@ -1,4 +1,4 @@
-# Copyright 2017 - 2023 Avram Lubkin, All Rights Reserved
+# Copyright 2017 - 2025 Avram Lubkin, All Rights Reserved
 
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -57,7 +57,7 @@ def print_spelling_errors(filename, encoding='utf8'):
         sys.stdout.write('Misspelled Words:\n')
         with io.open(filename, encoding=encoding) as wordlist:
             for line in wordlist:
-                sys.stdout.write('    ' + line)
+                sys.stdout.write(f'    {line}')
 
     return 1 if filesize else 0
 
@@ -212,7 +212,7 @@ def check_copyrights():
             # Compare modified date to copyright year
             if modified and modified != year:
                 rtn = 1
-                print('%s: %s [%s]' % (filename, text, modified))
+                print(f'{filename}: {text} [{modified}]')
 
     return rtn
 
@@ -247,5 +247,5 @@ if __name__ == '__main__':
 
     # Unknown option
     else:
-        sys.stderr.write('Unknown option: %s' % sys.argv[1])
+        sys.stderr.write(f'Unknown option: {sys.argv[1]}')
         sys.exit(1)

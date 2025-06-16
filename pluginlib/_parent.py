@@ -132,7 +132,7 @@ class ClassInspector:
             # If it's not a type we're specifically checking, just check for existence
             elif submethod is UNDEFINED:
                 self.errorcode = 214
-                self.message = 'Does not contain required attribute (%s)' % name
+                self.message = f'Does not contain required attribute ({name})'
 
             if not self.errorcode:
                 self._check_coroutine_method(name, method, submethod)
@@ -152,7 +152,7 @@ class ClassInspector:
 
         if submethod is UNDEFINED or not isinstance(submethod, property):
             self.errorcode = 210
-            self.message = 'Does not contain required property (%s)' % name
+            self.message = f'Does not contain required property ({name})'
 
     def _check_static_method(self, name, method, submethod):
         """
@@ -166,7 +166,7 @@ class ClassInspector:
 
         if submethod is UNDEFINED or not isinstance(submethod, staticmethod):
             self.errorcode = 211
-            self.message = 'Does not contain required static method (%s)' % name
+            self.message = f'Does not contain required static method ({name})'
         else:
             self._compare_argspec(name, getfullargspec(method.__func__),
                                   getfullargspec(submethod.__func__))
@@ -183,7 +183,7 @@ class ClassInspector:
 
         if submethod is UNDEFINED or not isinstance(submethod, classmethod):
             self.errorcode = 212
-            self.message = 'Does not contain required class method (%s)' % name
+            self.message = f'Does not contain required class method ({name})'
         else:
             self._compare_argspec(name, getfullargspec(method.__func__),
                                   getfullargspec(submethod.__func__))
@@ -200,7 +200,7 @@ class ClassInspector:
 
         if submethod is UNDEFINED or not isfunction(submethod):
             self.errorcode = 213
-            self.message = 'Does not contain required method (%s)' % name
+            self.message = f'Does not contain required method ({name})'
         else:
             self._compare_argspec(name, getfullargspec(method), getfullargspec(submethod))
 
@@ -216,7 +216,7 @@ class ClassInspector:
 
         if iscoroutinefunction(method) and not iscoroutinefunction(submethod):
             self.errorcode = 215
-            self.message = 'Does not contain required coroutine method (%s)' % name
+            self.message = f'Does not contain required coroutine method ({name})'
 
     def _check_annotations(self, name, method, submethod):
         """
@@ -233,7 +233,7 @@ class ClassInspector:
             submeth_annotations = getattr(submethod, '__annotations__', {})
             if submeth_annotations and meth_annotations != submeth_annotations:
                 self.errorcode = 216
-                self.message = 'Type annotations differ for (%s)' % name
+                self.message = f'Type annotations differ for ({name})'
 
     def _compare_argspec(self, name, spec_1, spec_2):
         """
@@ -260,7 +260,7 @@ class ClassInspector:
 
         if not matches:
             self.errorcode = 220
-            self.message = 'Argument spec does not match parent for method %s' % name
+            self.message = f'Argument spec does not match parent for method {name}'
 
 
 class PluginType(type):
@@ -285,7 +285,7 @@ class PluginType(type):
 
         if new._type_ in group:
             if new._parent_:
-                raise ValueError('parent must be unique: %s' % new._type_)
+                raise ValueError(f'parent must be unique: {new._type_}')
 
             plugindict = group[new._type_].get(new.name, UNDEFINED)
             version = str(new.version or 0)
@@ -294,10 +294,12 @@ class PluginType(type):
             if plugindict and version in plugindict:
 
                 existing = plugindict[version]
-                warnings.warn("Duplicate plugins found for %s: %s.%s and %s.%s" %
-                              (new, new.__module__, new.__name__,
-                               existing.__module__, existing.__name__),
-                              PluginWarning, stacklevel=2)
+                warnings.warn(
+                    f'Duplicate plugins found for {new}: {new.__module__}.{new.__name__} and '
+                    f'{existing.__module__}.{existing.__name__}',
+                    PluginWarning,
+                    stacklevel=2
+                )
 
             else:
                 result = ClassInspector(group[new._type_]._parent, new)
@@ -328,7 +330,7 @@ class PluginType(type):
                         new.__abstractmethods__[method_name] = method
 
         else:
-            raise ValueError('Unknown parent type: %s' % new._type_)
+            raise ValueError(f'Unknown parent type: {new._type_}')
 
         return new
 

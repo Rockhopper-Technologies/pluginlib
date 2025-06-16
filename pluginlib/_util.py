@@ -154,7 +154,7 @@ class DictWithDotNotation(dict):
         try:
             return self[name]
         except KeyError:
-            raise AttributeError("'dict' object has no attribute '%s'" % name) from None
+            raise AttributeError(f"'dict' object has no attribute '{name}'") from None
 
 
 class abstractstaticmethod(staticmethod):  # noqa: N801  # pylint: disable=invalid-name

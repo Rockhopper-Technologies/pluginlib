@@ -70,17 +70,17 @@ class BlacklistEntry:
             self.operator = operator
 
         if self.version is not None and not isinstance(self.version, str):
-            raise TypeError('version must be a string, received %s' % type(self.version).__name__)
+            raise TypeError(f'version must be a string, received {type(self.version).__name__}')
 
         if self.operator is None:
             self.operator = '=='
         elif self.operator not in OPERATORS:
-            raise AttributeError("Unsupported operator '%s'" % self.operator)
+            raise AttributeError(f"Unsupported operator '{self.operator}'")
 
     def __repr__(self):
 
         attrs = (self.type, self.name, self.operator, self.version)
-        return '%s(%s)' % (self.__class__.__name__, ', '.join([repr(attr) for attr in attrs]))
+        return f'{self.__class__.__name__}({", ".join([repr(attr) for attr in attrs])})'
 
 
 class GroupDict(DictWithDotNotation):
