@@ -28,9 +28,9 @@ from pluginlib._util import LOGGER, NoneType, PY_LT_3_10
 
 
 if PY_LT_3_10:  # pragma: no cover
-    from importlib_metadata import entry_points, EntryPoint  # pylint: disable=import-error
+    from importlib_metadata import entry_points  # pylint: disable=import-error
 else:
-    from importlib.metadata import entry_points, EntryPoint
+    from importlib.metadata import entry_points
 
 
 def _raise_friendly_exception(exc, name, path):
@@ -89,7 +89,7 @@ def _import_module(name, path=None):
 
     # If name is an entry point, try to parse it
     epoint = None
-    if isinstance(name, EntryPoint):
+    if hasattr(name, 'module'):
         epoint = name
         name = epoint.module
 
