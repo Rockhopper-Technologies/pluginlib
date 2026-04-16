@@ -52,6 +52,7 @@ spelling-ignore-words=
     argspecs, asyncio, attr, autoattribute, Args, Avram, Lubkin,
     basename, BlacklistEntry, bool, Boolean,
     classmethod, cls, coroutine,
+    debugpy,
     EntryPointWarning, errorcode, exc,
     FullArgSpec, func,
     getset,
