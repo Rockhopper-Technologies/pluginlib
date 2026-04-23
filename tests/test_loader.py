@@ -16,7 +16,6 @@ from unittest import mock, TestCase
 
 import pluginlib._loader as loader
 from pluginlib._objects import OrderedDict
-from pluginlib._util import PY_LT_3_10
 from pluginlib import BlacklistEntry, PluginImportError, EntryPointWarning, PluginWarning
 
 from tests import OUTPUT
@@ -24,9 +23,10 @@ import tests.testdata
 import tests.testdata.parents
 
 
-if PY_LT_3_10:
+try:
+    # For Python <3.10 and debugpy
     from importlib_metadata import EntryPoint, EntryPoints  # pylint: disable=import-error
-else:
+except ImportError:
     from importlib.metadata import EntryPoint, EntryPoints
 
 

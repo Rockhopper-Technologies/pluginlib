@@ -13,13 +13,10 @@ This module contains generic functions for use in other modules
 import abc
 import logging
 import operator as _operator
-import sys
 import warnings
 from functools import update_wrapper, wraps
 from inspect import isclass
 
-
-PY_LT_3_10 = sys.version_info[:2] < (3, 10)
 
 # Setup logger
 LOGGER = logging.getLogger('pluginlib')
